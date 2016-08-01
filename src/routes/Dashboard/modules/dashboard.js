@@ -1,14 +1,14 @@
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const COUNTER_INCREMENT = 'COUNTER_INCREMENT'
+export const DASHBOARD_INCREMENT = 'DASHBOARD_INCREMENT'
 
 // ------------------------------------
 // Actions
 // ------------------------------------
 export function increment (value = 1) {
   return {
-    type: COUNTER_INCREMENT,
+    type: DASHBOARD_INCREMENT,
     payload: value
   }
 }
@@ -18,14 +18,14 @@ export function increment (value = 1) {
     creating async actions, especially when combined with redux-thunk!
 
     NOTE: This is solely for demonstration purposes. In a real application,
-    you'd probably want to dispatch an action of COUNTER_DOUBLE and let the
+    you'd probably want to dispatch an action of DASHBOARD_DOUBLE and let the
     reducer take care of this logic.  */
 
 export const doubleAsync = () => {
   return (dispatch, getState) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        dispatch(increment(getState().counter))
+        dispatch(increment(getState().dashboard))
         resolve()
       }, 200)
     })
@@ -41,14 +41,14 @@ export const actions = {
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [COUNTER_INCREMENT]: (state, action) => state + action.payload
+  [DASHBOARD_INCREMENT]: (state, action) => state + action.payload
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
 const initialState = 0
-export default function counterReducer (state = initialState, action) {
+export default function dashboardReducer (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
 
   return handler ? handler(state, action) : state
