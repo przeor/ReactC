@@ -8,14 +8,9 @@ import classes from './CoreLayout.scss'
 import '../../styles/core.scss'
 
 export const CoreLayout = ({ children }) => (
-  <MuiThemeProvider muiTheme={muiTheme}>
-    <div className='container text-center'>
-      <Header />
-      <div className={classes.mainContainer}>
+    <div>
         {children}
-      </div>
     </div>
-  </MuiThemeProvider>
 )
 
 CoreLayout.propTypes = {
