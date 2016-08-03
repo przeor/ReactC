@@ -1,45 +1,12 @@
 import React from 'react'
 import classes from './Dashboard.scss'
 
-
-import Chip from 'material-ui/Chip'
-
-
-const styles = {
-  chip: {
-    margin: 4,
-  },
-  wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-};
-const renderChip = (data) => {
-  return (
-    <Chip
-      key={data.key}
-      onRequestDelete={() => {}}
-      style={styles.chip}
-    >
-      {data.label}
-    </Chip>
-  )
-}
-
-const ChipList = (props) => {
-  console.info('chip', props)
-  const chipData = props.dashboard.dashboardItems
-  return (
-    <div style={styles.wrapper}>
-      {chipData.map(renderChip)}
-    </div>
-)}
-
-
-
-
 export const Dashboard = (props) => {
-  console.info(props)
+
+  const listJSX = props.dashboard.dashboardItems.map((item, i) => {
+    return <h4 key={i}>{item.label}</h4>
+  })
+
   return (
   <div>
     <h2 className={classes.dashboardContainer}>
@@ -49,12 +16,12 @@ export const Dashboard = (props) => {
         {props.dashboard.visitsCount}
       </span>
     </h2>
-    <ChipList {...props} />
+    {listJSX}
   </div>
 )}
 
 Dashboard.propTypes = {
-  // dashboard: React.PropTypes.object.isRequired
+  dashboard: React.PropTypes.object.isRequired
 }
 
 export default Dashboard
