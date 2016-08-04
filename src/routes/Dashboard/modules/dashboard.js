@@ -3,6 +3,7 @@
 // ------------------------------------
 export const DASHBOARD_VISITS_COUNT = 'DASHBOARD_VISITS_COUNT'
 export const DASHBOARD_ADD_ITEM = 'DASHBOARD_ADD_ITEM'
+export const DASHBOARD_EDIT_ITEM = 'DASHBOARD_EDIT_ITEM'
 
 // ------------------------------------
 // Actions
@@ -21,10 +22,13 @@ export function dashboardAddItem (value) {
   }
 }
 
-
-export const actions = {
-  dashboardVisitIncrement
+export function dashboardEditItem (value) {
+  return {
+    type: DASHBOARD_EDIT_ITEM,
+    payload: value
+  }
 }
+
 
 // ------------------------------------
 // Action Handlers
@@ -41,6 +45,12 @@ const ACTION_HANDLERS = {
       id: mockedId
     }
     state.dashboardItems.push(newItem)
+    return Object.assign({}, state)
+  },
+  [DASHBOARD_EDIT_ITEM]: (state, action) => { 
+    const newLabel = action.payload.val
+    const index = action.payload.editedItemIndex
+    state.dashboardItems[index].label = newLabel
     return Object.assign({}, state)
   }
 }

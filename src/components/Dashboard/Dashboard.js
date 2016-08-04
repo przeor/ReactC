@@ -4,11 +4,17 @@ import classes from './Dashboard.scss'
 export const Dashboard = (props) => {
 
   const listJSX = props.dashboard.dashboardItems.map((item, i) => {
+    let itemJSX;
+    if(props.editedItemIndex === i) {
+      itemJSX = <p><b><u>{item.label}</u></b></p>
+    } else {
+      itemJSX = <p>{item.label}</p>
+    }
     return <h4 
             key={i} 
             onClick={props.itemOnEdit.bind(undefined,i)}
             style={{cursor: 'pointer'}}>
-              {item.label}
+              {itemJSX}
           </h4>
   })
 
@@ -30,7 +36,7 @@ export const Dashboard = (props) => {
         onChange={props.inputOnChange} />
       <input 
         type='submit' 
-        value='Add New Item To The List' />
+        value={ props.editedItemIndex === null ? 'Add New Item To The List' : 'Edit Item' } />
     </form>
     {listJSX}
   </div>
