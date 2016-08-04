@@ -1,20 +1,6 @@
 import React from 'react'
 import classes from './Dashboard.scss'
 
-const handleOnDragOver = (e) => {
-  e.preventDefault()
-  console.info('dragging over')
-}
-
-const handleOnDragStart = (e) => {
-  console.log('onDragStart')
-}
-
-const handleOnDrop = (e) => {
-  console.log('onDrop')
-}
-
-
 export const Dashboard = (props) => {
 
   const listJSX = props.dashboard.dashboardItems.map((item, i) => {
@@ -25,12 +11,13 @@ export const Dashboard = (props) => {
       itemJSX = <p>{item.label}</p>
     }
     return <h4 
+            id={i}
             draggable='true'
-            onDragOver={handleOnDragOver}
-            onDragStart={handleOnDragStart}
-            onDrop={handleOnDrop}
+            onDragOver={props.handleOnDragOver}
+            onDragStart={props.handleOnDragStart}
+            onDrop={props.handleOnDrop}
             key={i} 
-            onClick={props.itemOnEdit.bind(undefined,i)}
+            onClick={props.itemOnEdit.bind(undefined, i)}
             style={{cursor: 'pointer'}}>
               {itemJSX}
           </h4>

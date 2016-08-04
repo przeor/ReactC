@@ -25,16 +25,37 @@ class DashboardContainer extends React.Component {
     this.inputOnChange = this.inputOnChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.itemOnEdit = this.itemOnEdit.bind(this)
+    this.handleOnDragStart = this.handleOnDragStart.bind(this)
+    this.handleOnDrop = this.handleOnDrop.bind(this)
+    this.handleOnDragOver = this.handleOnDragOver.bind(this)
 
 
     this.state = {
       inputValue: '',
-      editedItemIndex: null
+      editedItemIndex: null,
+      draggedItemIndex: null,
+      droppedItemIndex: null
     }
   }
 
   componentDidMount() {
     this.props.dashboardVisitIncrement();
+  }
+
+  handleOnDragStart (e) {
+    const id = e.target.id
+    console.info('start id', id)
+  }
+
+  handleOnDragOver (e) {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+    // You can add here more logic if required
+  }
+
+  handleOnDrop (e) {
+    const id = e.currentTarget.id
+    console.info('drop id', id)
   }
 
   inputOnChange(e) {
@@ -64,6 +85,9 @@ class DashboardContainer extends React.Component {
   render () {
     return (
         <Dashboard {...this.props} 
+          handleOnDragOver={this.handleOnDragOver}
+          handleOnDrop={this.handleOnDrop}
+          handleOnDragStart={this.handleOnDragStart}
           editedItemIndex={this.state.editedItemIndex}
           itemOnEdit={this.itemOnEdit}
           inputValue={this.state.inputValue}
