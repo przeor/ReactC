@@ -105,7 +105,6 @@
     "koa-convert": "^1.2.0",
     "koa-proxy": "^0.6.0",
     "koa-static": "^3.0.0",
-    "material-ui": "^0.15.2",
     "node-sass": "^3.7.0",
     "normalize.css": "^4.1.1",
     "postcss-loader": "^0.9.0",
