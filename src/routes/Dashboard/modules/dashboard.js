@@ -4,6 +4,7 @@
 export const DASHBOARD_VISITS_COUNT = 'DASHBOARD_VISITS_COUNT'
 export const DASHBOARD_ADD_ITEM = 'DASHBOARD_ADD_ITEM'
 export const DASHBOARD_EDIT_ITEM = 'DASHBOARD_EDIT_ITEM'
+export const DASHBOARD_REORDER_ITEM = 'DASHBOARD_REORDER_ITEM'
 
 // ------------------------------------
 // Actions
@@ -25,6 +26,13 @@ export function dashboardAddItem (value) {
 export function dashboardEditItem (value) {
   return {
     type: DASHBOARD_EDIT_ITEM,
+    payload: value
+  }
+}
+
+export function dashboardReorderItems (value) {
+  return {
+    type: DASHBOARD_REORDER_ITEM,
     payload: value
   }
 }
@@ -51,6 +59,12 @@ const ACTION_HANDLERS = {
     const newLabel = action.payload.val
     const index = action.payload.editedItemIndex
     state.dashboardItems[index].label = newLabel
+    return Object.assign({}, state)
+  },
+  [DASHBOARD_REORDER_ITEM]: (state, action) => { 
+    console.info('reordering', action.payload)
+
+
     return Object.assign({}, state)
   }
 }

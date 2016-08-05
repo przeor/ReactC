@@ -3,14 +3,16 @@ import { connect } from 'react-redux'
 import { 
   dashboardVisitIncrement, 
   dashboardAddItem,
-  dashboardEditItem 
+  dashboardEditItem ,
+  dashboardReorderItems
 } from '../modules/dashboard'
 import Dashboard from 'components/Dashboard'
 
 const mapActionCreators = {
   dashboardVisitIncrement: () => dashboardVisitIncrement(1),
   dashboardAddItem: (value) => dashboardAddItem(value),
-  dashboardEditItem: (value) => dashboardEditItem(value)
+  dashboardEditItem: (value) => dashboardEditItem(value),
+  dashboardReorderItems: (value) => dashboardReorderItems(value)
 }
 
 const mapStateToProps = (state) => ({
@@ -33,8 +35,7 @@ class DashboardContainer extends React.Component {
     this.state = {
       inputValue: '',
       editedItemIndex: null,
-      draggedItemIndex: null,
-      droppedItemIndex: null
+      draggedItemIndex: null
     }
   }
 
@@ -44,7 +45,7 @@ class DashboardContainer extends React.Component {
 
   handleOnDragStart (e) {
     const id = e.target.id
-    console.info('start id', id)
+    this.setState({ draggedItemIndex: id })
   }
 
   handleOnDragOver (e) {
@@ -54,8 +55,21 @@ class DashboardContainer extends React.Component {
   }
 
   handleOnDrop (e) {
-    const id = e.currentTarget.id
-    console.info('drop id', id)
+    const droppedItemId = e.currentTarget.id
+    let reorderVal = { 
+      start: this.state.draggedItemIndex,
+      end: droppedItemId
+    }
+
+    // the div ids have to be a numbers to reorder correctly
+    // and the start and end value has to be different (otherwise reorder is not required)
+    const reorderIsCorrect = !isNaN(reorderVal.start) && !isNaN(reorderVal.end) && reorderVal.start !== reorderVal.end
+
+    if(reorderIsCorrect) {
+      this.props.dashboardReorderItems(reorderVal)
+    }
+
+    this.setState({ draggedItemIndex: null })
   }
 
   inputOnChange(e) {
