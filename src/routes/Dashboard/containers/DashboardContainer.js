@@ -57,8 +57,8 @@ class DashboardContainer extends React.Component {
   handleOnDrop (e) {
     const droppedItemId = e.currentTarget.id
     let reorderVal = { 
-      start: this.state.draggedItemIndex,
-      end: droppedItemId
+      start: parseInt(this.state.draggedItemIndex),
+      end: parseInt(droppedItemId)
     }
 
     // the div ids have to be a numbers to reorder correctly
