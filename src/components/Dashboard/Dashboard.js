@@ -11,8 +11,13 @@ export const Dashboard = (props) => {
       itemJSX = <p>{item.label}</p>
     }
     return <h4 
+            id={i}
+            draggable='true'
+            onDragOver={props.handleOnDragOver}
+            onDragStart={props.handleOnDragStart}
+            onDrop={props.handleOnDrop}
             key={i} 
-            onClick={props.itemOnEdit.bind(undefined,i)}
+            onClick={props.itemOnEdit.bind(undefined, i)}
             style={{cursor: 'pointer'}}>
               {itemJSX}
           </h4>
