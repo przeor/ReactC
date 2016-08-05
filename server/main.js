@@ -9,10 +9,46 @@ import _debug from 'debug'
 import config from '../config'
 import webpackDevMiddleware from './middleware/webpack-dev'
 import webpackHMRMiddleware from './middleware/webpack-hmr'
+import Router from 'koa-router'
+var bodyParser = require('koa-bodyparser');
 
 const debug = _debug('app:server')
 const paths = config.utils_paths
 const app = new Koa()
+const router = new Router()
+
+app.use(bodyParser());
+
+router.get('/login', (ctx, next) => {
+  ctx.body = {
+    loginToken: 'mocked'
+  }
+})
+
+
+// router
+//   .get('/login', function *(next) {
+//     this.body = 'Hello World!';
+//   })
+//   .post('/login2', function *(next) {
+//     // ...
+//   })
+//   .put('/users/:id', function *(next) {
+//     // ...
+//   })
+//   .del('/users/:id', function *(next) {
+//     // ...
+//   });
+
+router.get('/login2', (ctx, next) => {
+  ctx.body = {
+    loginToken: 'mockedPOST'
+  }
+})
+
+app
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 // Enable koa-proxy if it has been enabled in the config.
 if (config.proxy && config.proxy.enabled) {
