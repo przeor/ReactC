@@ -22,26 +22,13 @@ export function increment (value = 1) {
     reducer take care of this logic.  */
 
 export const doubleAsync = () => {
-  return async (dispatch, getState) => {
-    let returnDobule = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve()
-      }, 200)
-    }).then(() => {
-      return 'kamil'
-    })
-    console.info('returnDobule', returnDobule)
-    dispatch(increment(getState().counter))
-
-
-    let returnDobuleAgain = await new Promise((resolve) => {
+  return (dispatch, getState) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         dispatch(increment(getState().counter))
         resolve()
       }, 200)
     })
-
-    return returnDobuleAgain
   }
 }
 

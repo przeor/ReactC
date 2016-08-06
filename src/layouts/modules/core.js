@@ -1,67 +1,81 @@
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const CORE_INCREMENT = 'CORE_INCREMENT'
+export const SESSION_LOGIN_SUCCESS = 'SESSION_LOGIN_SUCCESS'
+
+export const SESSION_LOGIN_FAIL = 'SESSION_LOGIN_FAIL'
+
+// export const SESSION_LOGIN_SUCCESS = 'SESSION_LOGIN_SUCCESS'
+
+
+
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-export function increment (value = 1) {
+export function sessionLoginSuccess (value) {
   return {
-    type: CORE_INCREMENT,
+    type: SESSION_LOGIN_SUCCESS,
     payload: value
   }
 }
 
-/*  This is a thunk, meaning it is a function that immediately
-    returns a function for lazy evaluation. It is incredibly useful for
-    creating async actions, especially when combined with redux-thunk!
+export function sessionLoginFail (value) {
+  return {
+    type: SESSION_LOGIN_FAIL,
+    payload: value
+  }
+}
 
-    NOTE: This is solely for demonstration purposes. In a real application,
-    you'd probably want to dispatch an action of CORE_DOUBLE and let the
-    reducer take care of this logic.  */
-
-export const doubleAsync = () => {
+export const sessionLoginAsync = () => {
   return async (dispatch, getState) => {
-    let returnDobule = await new Promise((resolve) => {
+    let loginToken = await new Promise((resolve) => {
       setTimeout(() => {
         resolve()
       }, 200)
     }).then(() => {
-      return 'kamil'
+      return 'www.mwp.io' // just a mocked token
     })
-    console.info('returnDobule', returnDobule)
-    dispatch(increment(getState().core))
+    console.info('loginToken', loginToken)
 
+    // based on the server response
+    // we dispatch fail or success action
+    if(loginToken === 'invalid') {
+      dispatch(sessionLoginFail(loginToken))
+    } else {
+      dispatch(sessionLoginSuccess(loginToken))
+    }
 
-    let returnDobuleAgain = await new Promise((resolve) => {
-      setTimeout(() => {
-        dispatch(increment(getState().core))
-        resolve()
-      }, 200)
-    })
-
-    return returnDobuleAgain
+    return loginToken
   }
-}
-
-export const actions = {
-  increment,
-  doubleAsync
 }
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [CORE_INCREMENT]: (state, action) => state + action.payload
+  [SESSION_LOGIN_SUCCESS]: (state, action) => { 
+    // login token mock
+    state.loginToken = Math.floor(Date.now() / 1000)
+    alert('success')
+    return Object.assign({}, state)
+  },
+  [SESSION_LOGIN_FAIL]: (state, action) => { 
+    // login token mock
+    alert('failed')
+    // state.loginToken = Math.floor(Date.now() / 1000)
+    return Object.assign({}, state)
+  }
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = 0
-export default function coreReducer (state = initialState, action) {
+const initialState = {
+  loginToken: null
+}
+
+export default function dashboardReducer (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
 
   return handler ? handler(state, action) : state

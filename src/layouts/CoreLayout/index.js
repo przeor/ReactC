@@ -2,7 +2,6 @@ import CoreLayout from './CoreLayout'
 import { injectReducer } from '../../store/reducers'
 
 export default (store) => { 
-	console.info('CoreLayout 555')
 
   /*  Webpack - use require callback to define
       dependencies for bundling   */
@@ -12,5 +11,5 @@ export default (store) => {
   /*  Add the reducer to the store on key 'core'  */
   injectReducer(store, { key: 'core', reducer })
 
-	return CoreLayout
+  return CoreLayout
 }

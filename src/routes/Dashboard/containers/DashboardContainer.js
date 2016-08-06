@@ -15,9 +15,12 @@ const mapActionCreators = {
   dashboardReorderItems: (value) => dashboardReorderItems(value)
 }
 
-const mapStateToProps = (state) => ({
-  dashboard: state.dashboard
-})
+const mapStateToProps = (state) => {
+  return {
+    dashboard: state.dashboard,
+    core: state.core
+  }
+}
 
 
 class DashboardContainer extends React.Component {
@@ -97,6 +100,10 @@ class DashboardContainer extends React.Component {
   }
 
   render () {
+    if(!this.props.core.loginToken) {
+      return <h3>Login required</h3>
+    }
+
     return (
         <Dashboard {...this.props} 
           handleOnDragOver={this.handleOnDragOver}
