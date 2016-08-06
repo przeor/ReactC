@@ -27,9 +27,11 @@ export function sessionLoginFail (value) {
   }
 }
 
-export const sessionLoginAsync = () => {
+export const sessionLoginAsync = (value) => {
+  console.info('works222')
   return async (dispatch, getState) => {
     let loginToken = await new Promise((resolve) => {
+      console.info('logging with details:', value)
       setTimeout(() => {
         resolve()
       }, 200)
