@@ -1,0 +1,12 @@
+.session {
+  font-weight: bold;
+}
+
+.session--green {
+  composes: session;
+  color: rgb(25,200,25);
+}
+
+.sessionContainer {
+  margin: 1em auto;
+}
