@@ -2,6 +2,20 @@ import React, { Component, PropTypes } from 'react'
 import { Router } from 'react-router'
 import { Provider } from 'react-redux'
 
+
+import { connect } from 'react-redux'
+import { increment, loginAsync } from '../routes/Session/modules/session'
+
+const mapActionCreators = {
+  increment: () => increment(1),
+  loginAsync
+}
+
+const mapStateToProps = (state) => ({
+  session: state.session
+})
+
+
 class AppContainer extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
@@ -15,6 +29,7 @@ class AppContainer extends Component {
     return (
       <Provider store={store}>
         <div style={{ height: '100%' }}>
+          <div onClick={this.props.loginAsync} >login</div>
           <Router history={history} children={routes} />
         </div>
       </Provider>
@@ -22,4 +37,4 @@ class AppContainer extends Component {
   }
 }
 
-export default AppContainer
+export default connect(mapStateToProps, mapActionCreators)(AppContainer)

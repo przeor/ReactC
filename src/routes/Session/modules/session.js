@@ -21,7 +21,9 @@ export function increment (value = 1) {
     you'd probably want to dispatch an action of SESSION_DOUBLE and let the
     reducer take care of this logic.  */
 
-export const doubleAsync = () => {
+export const loginAsync = () => {
+
+  alert('works')
   return (dispatch, getState) => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -34,7 +36,7 @@ export const doubleAsync = () => {
 
 export const actions = {
   increment,
-  doubleAsync
+  loginAsync
 }
 
 // ------------------------------------

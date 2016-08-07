@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { increment, doubleAsync } from '../modules/session'
+import { increment, loginAsync } from '../modules/session'
 
 /*  This is a container component. Notice it does not contain any JSX,
     nor does it import React. This component is **only** responsible for
@@ -14,7 +14,7 @@ import Session from 'components/Session'
 
 const mapActionCreators = {
   increment: () => increment(1),
-  doubleAsync
+  loginAsync
 }
 
 const mapStateToProps = (state) => ({
