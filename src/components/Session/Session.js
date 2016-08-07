@@ -22,7 +22,7 @@ export const Session = (props) => (
 
 Session.propTypes = {
   session: React.PropTypes.number.isRequired,
-  doubleAsync: React.PropTypes.func.isRequired,
+  loginAsync: React.PropTypes.func.isRequired,
   increment: React.PropTypes.func.isRequired
 }
 

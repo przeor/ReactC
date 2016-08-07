@@ -2,7 +2,7 @@ import React from 'react'
 import { IndexLink, Link } from 'react-router'
 import classes from './Header.scss'
 
-export const Header = () => (
+export const Header = (props) => (
   <div>
     <h1>React Redux Starter Kit</h1>
     <IndexLink to='/' activeClassName={classes.activeRoute}>
@@ -16,6 +16,8 @@ export const Header = () => (
     <Link to='/dashboard' activeClassName={classes.activeRoute}>
       Dashboard
     </Link>
+    {' · '}
+    <div onClick={props.loginAsync} >Login</div>
   </div>
 )
 
