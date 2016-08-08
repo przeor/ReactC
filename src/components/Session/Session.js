@@ -7,7 +7,8 @@ export const Session = (props) => (
       Session:
       {' '}
       <span className={classes['session--green']}>
-        {props.session}
+        {props.session.count} <br/>
+        {props.session.loginToken}
       </span>
     </h2>
     <button className='btn btn-default' onClick={props.increment}>
@@ -21,7 +22,7 @@ export const Session = (props) => (
 )
 
 Session.propTypes = {
-  session: React.PropTypes.number.isRequired,
+  session: React.PropTypes.object.isRequired,
   loginAsync: React.PropTypes.func.isRequired,
   increment: React.PropTypes.func.isRequired
 }

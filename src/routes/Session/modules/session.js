@@ -23,11 +23,10 @@ export function increment (value = 1) {
 
 export const loginAsync = () => {
 
-  alert('works')
   return (dispatch, getState) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        dispatch(increment(getState().session))
+        dispatch(increment(getState().session.count))
         resolve()
       }, 200)
     })
@@ -43,13 +42,19 @@ export const actions = {
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [SESSION_INCREMENT]: (state, action) => state + action.payload
+  [SESSION_INCREMENT]: (state, action) => {
+    state.count = state.count + action.payload
+    return Object.assign({}, state)
+  }
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = 0
+const initialState = { 
+  count: 0,
+  loginToken: 'none'
+}
 export default function sessionReducer (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
 
