@@ -39,18 +39,24 @@ export function loginFail (value) {
     reducer take care of this logic.  */
 
 export const loginAsync = (loginObj) => {
+  console.info(1)
   return async (dispatch, getState) => {
+    console.info(2)
+    console.info(loginObj)
     let loginToken = await new Promise((resolve) => {
       setTimeout(() => {
         resolve()
       }, 200)
     }).then(() => {
-      if(loginObj.user === 'admin' && loginObj.password === 'mwp.io') {
+      console.info(3)
+
+      if(loginObj.user === 'przeor' && loginObj.password === 'mwp.io') {
         return 'www.mwp.io' // just a mocked token
       } else {
         return 'invalid' // mocked non successful login
       }
     })
+    console.info(4)
     if(loginToken !== 'invalid') {
       dispatch(loginSuccess(loginToken))
     } else {

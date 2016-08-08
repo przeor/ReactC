@@ -3,7 +3,7 @@ import Header from '../../components/Header'
 import classes from './CoreLayout.scss'
 import '../../styles/core.scss'
 import { connect } from 'react-redux'
-import { increment, loginAsync } from '../../routes/Session/modules/session'
+import { increment, loginAsync } from '../../modules/session'
 
 const mapActionCreators = {
   increment: () => increment(1),

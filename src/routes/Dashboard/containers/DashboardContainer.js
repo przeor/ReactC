@@ -51,7 +51,7 @@ class DashboardContainer extends React.Component {
 
   handleOnDragOver (e) {
     e.preventDefault()
-    e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+    e.dataTransfer.dropEffect = 'move'  // See the section on the DataTransfer object.
     // You can add here more logic if required
   }
 
