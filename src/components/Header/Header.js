@@ -16,10 +16,14 @@ const passwordOnChange = (e) => {
 }
 
 export const Header = (props) => {
-  let loginFormJSX;
-  const isNotLoggedIn = props.session.loginToken === 'none' || props.session.loginToken === 'invalid'
+  let loginFormJSX
+  let loginMessageJSX = null
 
-  if(isNotLoggedIn) {
+  if(props.session.isNotLoggedIn) {
+    if(props.session.loginToken === 'invalid') {
+      loginMessageJSX = <p>Invalid login details, please try with correct user and password</p>
+    }
+
     loginFormJSX = (<div>
       <form onSubmit={props.handleLogin.bind(undefined, loginObj)}>
         <input 
@@ -64,6 +68,7 @@ export const Header = (props) => {
         </Link>
       </div>
       {loginFormJSX}
+      {loginMessageJSX}
     </div>
   )
 }

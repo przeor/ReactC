@@ -3,6 +3,7 @@
 // ------------------------------------
 export const SESSION_INCREMENT = 'SESSION_INCREMENT'
 export const SESSION_LOGIN_SUCCESS = 'SESSION_LOGIN_SUCCESS'
+export const SESSION_LOGIN_FAIL = 'SESSION_LOGIN_FAIL'
 
 // ------------------------------------
 // Actions
@@ -20,6 +21,14 @@ export function loginSuccess (value) {
     payload: value
   }
 }
+
+export function loginFail (value) {
+  return {
+    type: SESSION_LOGIN_FAIL,
+    payload: value
+  }
+}
+
 
 /*  This is a thunk, meaning it is a function that immediately
     returns a function for lazy evaluation. It is incredibly useful for
@@ -42,8 +51,12 @@ export const loginAsync = (loginObj) => {
         return 'invalid' // mocked non successful login
       }
     })
+    if(loginToken !== 'invalid') {
+      dispatch(loginSuccess(loginToken))
+    } else {
+      dispatch(loginFail(loginToken))
+    }
     
-    dispatch(loginSuccess(loginToken))
   }
 }
 
@@ -62,16 +75,21 @@ const ACTION_HANDLERS = {
   },
   [SESSION_LOGIN_SUCCESS]: (state, action) => {
     state.loginToken = action.payload
+    state.isNotLoggedIn = false
+    return Object.assign({}, state)
+  },
+  [SESSION_LOGIN_FAIL]: (state, action) => {
+    state.loginToken = action.payload
     return Object.assign({}, state)
   }
 }
-
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
 const initialState = { 
   count: 0,
+  isNotLoggedIn: true,
   loginToken: 'none'
 }
 export default function sessionReducer (state = initialState, action) {
