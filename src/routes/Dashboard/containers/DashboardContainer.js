@@ -16,7 +16,8 @@ const mapActionCreators = {
 }
 
 const mapStateToProps = (state) => ({
-  dashboard: state.dashboard
+  dashboard: state.dashboard,
+  session: state.session
 })
 
 
@@ -50,7 +51,7 @@ class DashboardContainer extends React.Component {
 
   handleOnDragOver (e) {
     e.preventDefault()
-    e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+    e.dataTransfer.dropEffect = 'move'  // See the section on the DataTransfer object.
     // You can add here more logic if required
   }
 
@@ -97,6 +98,10 @@ class DashboardContainer extends React.Component {
   }
 
   render () {
+    if(this.props.session.isNotLoggedIn) {
+      return <h4>Please login in order to access your dashboard</h4>
+    }
+
     return (
         <Dashboard {...this.props} 
           handleOnDragOver={this.handleOnDragOver}
