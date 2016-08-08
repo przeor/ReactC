@@ -17,7 +17,7 @@ export const Header = (props) => (
       Dashboard
     </Link>
     {' · '}
-    <div onClick={props.loginAsync} >Login</div>
+    <div onClick={props.loginAsync.bind(undefined, {user: 'admin', password: 'mwp.io'})} >Login</div>
   </div>
 )
 

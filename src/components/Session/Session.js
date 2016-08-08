@@ -14,10 +14,6 @@ export const Session = (props) => (
     <button className='btn btn-default' onClick={props.increment}>
       Increment
     </button>
-    {' '}
-    <button className='btn btn-default' onClick={props.loginAsync}>
-      login (Async)
-    </button>
   </div>
 )
 

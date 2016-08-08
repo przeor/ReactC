@@ -29,18 +29,25 @@ export function loginSuccess (value) {
     you'd probably want to dispatch an action of SESSION_DOUBLE and let the
     reducer take care of this logic.  */
 
-export const loginAsync = () => {
+export const loginAsync = (loginObj) => {
+  console.info('login value', loginObj)
 
-  return (dispatch, getState) => {
-    return new Promise((resolve) => {
+
+  return async (dispatch, getState) => {
+    let loginToken = await new Promise((resolve) => {
+      console.info('logging with details:', loginObj)
       setTimeout(() => {
-        dispatch(increment(getState().session.count))
-        dispatch(loginSuccess('http://www.mwp.io'))
-
-        
         resolve()
       }, 200)
+    }).then(() => {
+      if(loginObj.user === 'admin' && loginObj.password === 'mwp.io') {
+        return 'www.mwp.io' // just a mocked token
+      } else {
+        return 'invalid' // mocked non successful login
+      }
     })
+    console.info('loginToken', loginToken)
+    dispatch(loginSuccess(loginToken))
   }
 }
 
