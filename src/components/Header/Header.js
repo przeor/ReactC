@@ -58,6 +58,10 @@ export const Header = (props) => {
         <Link to='/dashboard' activeClassName={classes.activeRoute}>
           Dashboard
         </Link>
+        {' · '}
+        <Link to='/session' activeClassName={classes.activeRoute}>
+          Session
+        </Link>
       </div>
       {loginFormJSX}
     </div>
