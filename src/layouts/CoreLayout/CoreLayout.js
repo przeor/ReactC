@@ -20,18 +20,28 @@ class CoreLayout extends Component {
     children: PropTypes.object.isRequired
   }
 
-  render () {
-  console.info(this.props)
-
-  return (
-    <div className='container text-center'>
-      <Header loginAsync={this.props.loginAsync} />
-      <div className={classes.mainContainer}>
-        {this.props.children}
-      </div>
-    </div>)
-
+  constructor(props) {
+    super(props)
+    this.handleLogin = this.handleLogin.bind(this)
   }
+
+  handleLogin(loginObj, e) {
+    e.preventDefault()
+    this.props.loginAsync(loginObj)
+  }
+
+  render () {
+    return (
+      <div className='container text-center'>
+        <Header 
+          handleLogin={this.handleLogin} 
+          session={this.props.session} />
+        <div className={classes.mainContainer}>
+          {this.props.children}
+        </div>
+      </div>)
+
+    }
 }
 
 

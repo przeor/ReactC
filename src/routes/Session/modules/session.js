@@ -30,12 +30,8 @@ export function loginSuccess (value) {
     reducer take care of this logic.  */
 
 export const loginAsync = (loginObj) => {
-  console.info('login value', loginObj)
-
-
   return async (dispatch, getState) => {
     let loginToken = await new Promise((resolve) => {
-      console.info('logging with details:', loginObj)
       setTimeout(() => {
         resolve()
       }, 200)
@@ -46,7 +42,7 @@ export const loginAsync = (loginObj) => {
         return 'invalid' // mocked non successful login
       }
     })
-    console.info('loginToken', loginToken)
+    
     dispatch(loginSuccess(loginToken))
   }
 }
