@@ -2,6 +2,7 @@
 // Constants
 // ------------------------------------
 export const SESSION_INCREMENT = 'SESSION_INCREMENT'
+export const SESSION_LOGIN_SUCCESS = 'SESSION_LOGIN_SUCCESS'
 
 // ------------------------------------
 // Actions
@@ -9,6 +10,13 @@ export const SESSION_INCREMENT = 'SESSION_INCREMENT'
 export function increment (value = 1) {
   return {
     type: SESSION_INCREMENT,
+    payload: value
+  }
+}
+
+export function loginSuccess (value) {
+  return {
+    type: SESSION_LOGIN_SUCCESS,
     payload: value
   }
 }
@@ -27,6 +35,9 @@ export const loginAsync = () => {
     return new Promise((resolve) => {
       setTimeout(() => {
         dispatch(increment(getState().session.count))
+        dispatch(loginSuccess('http://www.mwp.io'))
+
+        
         resolve()
       }, 200)
     })
@@ -45,8 +56,13 @@ const ACTION_HANDLERS = {
   [SESSION_INCREMENT]: (state, action) => {
     state.count = state.count + action.payload
     return Object.assign({}, state)
+  },
+  [SESSION_LOGIN_SUCCESS]: (state, action) => {
+    state.loginToken = action.payload
+    return Object.assign({}, state)
   }
 }
+
 
 // ------------------------------------
 // Reducer
