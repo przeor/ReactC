@@ -108,9 +108,6 @@ class CoreLayout extends Component {
           {this.props.children}
         </section>
 
-        <footer className="panel-footer">
-          <p>with <span className="heart">❤</span> by <a href="https://getmango.com/en" target="_blank">Mango</a></p>
-        </footer>
       </main>
     </div>)
 
