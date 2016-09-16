@@ -95,11 +95,21 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 const initialState = {
   visitsCount: 0,
-  dashboardItems: [
-    {key: 0, label: 'Angular'},
-    {key: 1, label: 'JQuery'},
-    {key: 2, label: 'Polymer'},
-    {key: 3, label: 'ReactJS'}
+  reducerRows: [
+    {
+      key: 0, 
+      rowColumns: [
+        'Angular',
+        'super'
+      ]
+    },
+    {
+      key: 1, 
+      rowColumns: [
+        'JQuery',
+        'old'
+      ]
+    }
   ]
 }
 export default function dashboardReducer (state = initialState, action) {

@@ -3,13 +3,23 @@ import classes from './Dashboard.scss'
 
 export const Dashboard = (props) => {
 
-  const listJSX = props.dashboard.dashboardItems.map((item, i) => {
-    let itemJSX;
-    if(props.editedItemIndex === i) {
-      itemJSX = <p><b><u>{item.label}</u></b></p>
-    } else {
-      itemJSX = <p>{item.label}</p>
-    }
+  const listJSX = props.dashboard.reducerRows.map((item, i) => {
+    console.info(item)
+    const rowColumns = item.rowColumns
+
+    let rowJSX = rowColumns.map((cellItem, cellIndex) => {
+      console.info('cellItem', cellItem)
+
+      let cellJSX
+
+      if(props.editedItemIndex === i) {
+        cellJSX = <p><b><u>{cellItem}</u></b></p>
+      } else {
+        cellJSX = <p>{cellItem}</p>
+      }
+      return <div>{cellJSX}</div>
+    })
+
     return <h4 
             id={i}
             draggable='true'
@@ -19,7 +29,8 @@ export const Dashboard = (props) => {
             key={i} 
             onClick={props.itemOnEdit.bind(undefined, i)}
             style={{cursor: 'pointer'}}>
-              {itemJSX}
+              {rowJSX}
+              <hr/>
           </h4>
   })
 

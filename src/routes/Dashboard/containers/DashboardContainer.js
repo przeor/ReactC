@@ -98,10 +98,6 @@ class DashboardContainer extends React.Component {
   }
 
   render () {
-    if(this.props.session.isNotLoggedIn) {
-      return <h4>Please login in order to access your dashboard</h4>
-    }
-
     return (
         <Dashboard {...this.props} 
           handleOnDragOver={this.handleOnDragOver}
