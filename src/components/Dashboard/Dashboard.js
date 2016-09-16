@@ -1,15 +1,41 @@
 import React from 'react'
 import classes from './Dashboard.scss'
 
+
+const ReducerRowsEditor = (props) => {
+
+  if(props.editedItemIndex === null) 
+    return <span />
+
+  console.info('editedItemIndex', props.editedItemIndex)
+
+  const rowColumns = props.dashboard.reducerRows[props.editedItemIndex].rowColumns
+  console.info('rowColumns', rowColumns)
+  let inputJSX = rowColumns.map((cellItem, cellIndex) => {
+    let inputJSX = <input 
+      value={cellItem}
+      type='input' 
+      placeholder='type here a value' 
+      style={{width: 300}}
+      onChange={props.inputOnChange} />
+    return <div key={cellIndex}>{inputJSX}</div>
+  })
+
+  return (<form onSubmit={props.onSubmit}>
+    {inputJSX}
+    <input 
+      type='submit' 
+      value={ props.editedItemIndex === null ? 'Add New Item To The List' : 'Edit Item' } />
+  </form>)
+}
+
+
 export const Dashboard = (props) => {
 
   const listJSX = props.dashboard.reducerRows.map((item, i) => {
-    console.info(item)
     const rowColumns = item.rowColumns
 
     let rowJSX = rowColumns.map((cellItem, cellIndex) => {
-      console.info('cellItem', cellItem)
-
       let cellJSX
 
       if(props.editedItemIndex === i) {
@@ -17,7 +43,7 @@ export const Dashboard = (props) => {
       } else {
         cellJSX = <p>{cellItem}</p>
       }
-      return <div>{cellJSX}</div>
+      return <div key={cellIndex}>{cellJSX}</div>
     })
 
     return <h4 
@@ -43,17 +69,7 @@ export const Dashboard = (props) => {
           {props.dashboard.visitsCount}
         </span>
       </h2>
-    <form onSubmit={props.onSubmit}>
-      <input 
-        value={props.inputValue}
-        type='input' 
-        placeholder='type here a value' 
-        style={{width: 300}}
-        onChange={props.inputOnChange} />
-      <input 
-        type='submit' 
-        value={ props.editedItemIndex === null ? 'Add New Item To The List' : 'Edit Item' } />
-    </form>
+    <ReducerRowsEditor {...props} />
     {listJSX}
   </div>
 )}

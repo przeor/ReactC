@@ -78,7 +78,7 @@ class DashboardContainer extends React.Component {
   }
 
   itemOnEdit(itemIndex) {
-    const editedItem = this.props.dashboard.dashboardItems[itemIndex]
+    const editedItem = this.props.dashboard.reducerRows[itemIndex]
     this.setState({ inputValue: editedItem.label, editedItemIndex: itemIndex })
   }
 
