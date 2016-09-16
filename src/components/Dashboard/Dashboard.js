@@ -7,17 +7,14 @@ const ReducerRowsEditor = (props) => {
   if(props.editedItemIndex === null) 
     return <span />
 
-  console.info('editedItemIndex', props.editedItemIndex)
-
-  const rowColumns = props.dashboard.reducerRows[props.editedItemIndex].rowColumns
-  console.info('rowColumns', rowColumns)
+  const rowColumns = props.inputValue ? props.inputValue : props.dashboard.reducerRows[props.editedItemIndex].rowColumns
   let inputJSX = rowColumns.map((cellItem, cellIndex) => {
     let inputJSX = <input 
       value={cellItem}
       type='input' 
       placeholder='type here a value' 
       style={{width: 300}}
-      onChange={props.inputOnChange} />
+      onChange={props.inputOnChange.bind(undefined, rowColumns, cellIndex)} />
     return <div key={cellIndex}>{inputJSX}</div>
   })
 

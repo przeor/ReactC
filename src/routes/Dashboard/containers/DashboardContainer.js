@@ -34,7 +34,7 @@ class DashboardContainer extends React.Component {
 
 
     this.state = {
-      inputValue: '',
+      inputValue: [],
       editedItemIndex: null,
       draggedItemIndex: null
     }
@@ -73,8 +73,10 @@ class DashboardContainer extends React.Component {
     this.setState({ draggedItemIndex: null })
   }
 
-  inputOnChange(e) {
-    this.setState({ inputValue: e.target.value })
+  inputOnChange(rowColumns, cellIndex, e) {
+    rowColumns = rowColumns.slice() // passing by value, NOT reference!
+    rowColumns[cellIndex] = e.target.value
+    this.setState({ inputValue: rowColumns })
   }
 
   itemOnEdit(itemIndex) {
