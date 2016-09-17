@@ -56,9 +56,9 @@ const ACTION_HANDLERS = {
     return Object.assign({}, state)
   },
   [DASHBOARD_EDIT_ITEM]: (state, action) => { 
-    const newLabel = action.payload.val
+    const newRowValue = action.payload.val
     const index = action.payload.editedItemIndex
-    state.dashboardItems[index].label = newLabel
+    state.reducerRows[index].rowColumns = newRowValue
     return Object.assign({}, state)
   },
   [DASHBOARD_REORDER_ITEM]: (state, action) => { 
