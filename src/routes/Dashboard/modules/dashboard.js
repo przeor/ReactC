@@ -63,9 +63,9 @@ const ACTION_HANDLERS = {
   },
   [DASHBOARD_REORDER_ITEM]: (state, action) => { 
     const reorder = action.payload
-    const reorderItem = state.dashboardItems[reorder.start]
-    let newDashboardItems = []
-    state.dashboardItems.map((item, i) => {
+    const reorderItem = state.reducerRows[reorder.start]
+    let newReducerRows = []
+    state.reducerRows.map((item, i) => {
       if(i === reorder.start) {
         return
       }
@@ -75,17 +75,17 @@ const ACTION_HANDLERS = {
       // an item from higher to lower place on the list or vice versa
       if(reorder.end < reorder.start) {
         if(i === reorder.end) {
-          newDashboardItems.push(reorderItem)
+          newReducerRows.push(reorderItem)
         }
-        newDashboardItems.push(item)
+        newReducerRows.push(item)
       } else {
-        newDashboardItems.push(item)
+        newReducerRows.push(item)
         if(i === reorder.end) {
-          newDashboardItems.push(reorderItem)
+          newReducerRows.push(reorderItem)
         }
       }
     })
-    state.dashboardItems = newDashboardItems
+    state.reducerRows = newReducerRows
     return Object.assign({}, state)
   }
 }
