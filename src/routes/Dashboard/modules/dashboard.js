@@ -49,10 +49,13 @@ const ACTION_HANDLERS = {
   [DASHBOARD_ADD_ITEM]: (state, action) => { 
     const mockedId = Math.floor(Date.now() / 1000)
     const newItem = {
-      label: action.payload,
-      id: mockedId
+      key: mockedId, 
+      rowColumns: [
+        action.payload,
+        'kamil'
+      ]
     }
-    state.dashboardItems.push(newItem)
+    state.reducerRows.push(newItem)
     return Object.assign({}, state)
   },
   [DASHBOARD_EDIT_ITEM]: (state, action) => { 

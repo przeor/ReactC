@@ -19,7 +19,33 @@ const ReducerRowsEditor = (props) => {
   })
 
   return (<form onSubmit={props.onSubmit}>
+    <h3>Edit Item</h3>
     {inputJSX}
+    <input 
+      type='submit' 
+      value={ props.editedItemIndex === null ? 'Add New Item To The List' : 'Edit Item' } />
+  </form>)
+}
+
+
+const ReducerRowsAdder = (props) => {
+  if(props.editedItemIndex !== null) 
+    return <span />
+
+  const addInputJSX = Object.keys(props.dashboard.reducerSchema).map((keyItem, cellIndex) => {
+    return (<div key={cellIndex}>
+        <input 
+          value={props.inputValue}
+          type='input' 
+          placeholder={keyItem+' - type here a value' }
+          style={{width: 300}}
+          onChange={props.inputOnChange.bind(undefined, [], cellIndex)} />
+      </div>)
+  })
+
+  return (<form onSubmit={props.onSubmit}>
+    <h3>Add Item</h3>
+    {addInputJSX}
     <input 
       type='submit' 
       value={ props.editedItemIndex === null ? 'Add New Item To The List' : 'Edit Item' } />
@@ -64,6 +90,7 @@ export const DashboardList = (props) => {
           {props.dashboard.visitsCount}
         </span>
       </h2>
+    <ReducerRowsAdder {...props} />
     <ReducerRowsEditor {...props} />
     {listJSX}
   </div>
