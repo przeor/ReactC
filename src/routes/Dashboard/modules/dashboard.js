@@ -95,15 +95,13 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 const initialState = {
   reducerSchema: {
-    {
       technology: String,
       review: String
-    }
   },
   visitsCount: 0,
   reducerRows: [
     {
-      key: 0, 
+      key: 0,
       rowColumns: [
         'Angular',
         'super'

@@ -1,5 +1,5 @@
 import React from 'react'
-import classes from './Dashboard.scss'
+import classes from './DashboardList.scss'
 
 
 const ReducerRowsEditor = (props) => {
@@ -26,9 +26,7 @@ const ReducerRowsEditor = (props) => {
   </form>)
 }
 
-
-export const Dashboard = (props) => {
-
+export const DashboardList = (props) => {
   const listJSX = props.dashboard.reducerRows.map((item, i) => {
     const rowColumns = item.rowColumns
 
@@ -71,8 +69,8 @@ export const Dashboard = (props) => {
   </div>
 )}
 
-Dashboard.propTypes = {
+DashboardList.propTypes = {
   dashboard: React.PropTypes.object.isRequired
 }
 
-export default Dashboard
+export default DashboardList

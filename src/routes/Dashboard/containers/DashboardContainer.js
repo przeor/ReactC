@@ -6,7 +6,7 @@ import {
   dashboardEditItem ,
   dashboardReorderItems
 } from '../modules/dashboard'
-import Dashboard from 'components/Dashboard'
+import DashboardList from 'components/Dashboard/DashboardList'
 
 const mapActionCreators = {
   dashboardVisitIncrement: () => dashboardVisitIncrement(1),
@@ -101,7 +101,7 @@ class DashboardContainer extends React.Component {
 
   render () {
     return (
-        <Dashboard {...this.props} 
+        <DashboardList {...this.props} 
           handleOnDragOver={this.handleOnDragOver}
           handleOnDrop={this.handleOnDrop}
           handleOnDragStart={this.handleOnDragStart}
