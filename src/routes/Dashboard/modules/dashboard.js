@@ -94,6 +94,12 @@ const ACTION_HANDLERS = {
 // Reducer
 // ------------------------------------
 const initialState = {
+  reducerSchema: {
+    {
+      technology: String,
+      review: String
+    }
+  },
   visitsCount: 0,
   reducerRows: [
     {
