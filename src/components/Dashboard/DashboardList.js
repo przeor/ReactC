@@ -32,14 +32,16 @@ const ReducerRowsAdder = (props) => {
   if(props.editedItemIndex !== null) 
     return <span />
 
-  const addInputJSX = Object.keys(props.dashboard.reducerSchema).map((keyItem, cellIndex) => {
+  const schemaKeys = Object.keys(props.dashboard.reducerSchema)
+  const allInputsLen = schemaKeys.length
+  const addInputJSX = schemaKeys.map((keyItem, cellIndex) => {
     return (<div key={cellIndex}>
         <input 
           value={props.inputValue}
           type='input' 
           placeholder={keyItem+' - type here a value' }
           style={{width: 300}}
-          onChange={props.inputOnChange.bind(undefined, [], cellIndex)} />
+          onChange={props.addInputOnChange.bind(undefined, allInputsLen, cellIndex)} />
       </div>)
   })
 

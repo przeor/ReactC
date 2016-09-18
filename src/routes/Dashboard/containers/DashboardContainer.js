@@ -31,6 +31,7 @@ class DashboardContainer extends React.Component {
     this.handleOnDragStart = this.handleOnDragStart.bind(this)
     this.handleOnDrop = this.handleOnDrop.bind(this)
     this.handleOnDragOver = this.handleOnDragOver.bind(this)
+    this.addInputOnChange = this.addInputOnChange.bind(this)
 
 
     this.state = {
@@ -79,6 +80,17 @@ class DashboardContainer extends React.Component {
     this.setState({ inputValue: rowColumns })
   }
 
+  addInputOnChange(allInputsLen, cellIndex, e) {
+    let currentInputs = this.state.inputValue.slice()
+    if(currentInputs.length === 0) {
+      for(var i = 0; i < allInputsLen; i++) {
+          currentInputs.push('');
+      }
+    }
+    currentInputs[cellIndex] = e.target.value
+    this.setState({ inputValue: currentInputs })
+  }
+
   itemOnEdit(itemIndex) {
     const editedItem = this.props.dashboard.reducerRows[itemIndex]
     this.setState({ inputValue: editedItem.label, editedItemIndex: itemIndex })
@@ -87,6 +99,7 @@ class DashboardContainer extends React.Component {
   onSubmit(e) {
     e.preventDefault()
     const val = this.state.inputValue
+    console.info('val', val)
     const editedItemIndex = this.state.editedItemIndex
     if(val && editedItemIndex !== null) {
       this.props.dashboardEditItem({ val, editedItemIndex })
@@ -109,6 +122,7 @@ class DashboardContainer extends React.Component {
           itemOnEdit={this.itemOnEdit}
           inputValue={this.state.inputValue}
           inputOnChange={this.inputOnChange}
+          addInputOnChange={this.addInputOnChange}
           onSubmit={this.onSubmit} />
     );
   }
