@@ -58,7 +58,7 @@ class DashboardContainer extends React.Component {
 
   handleOnDrop (e) {
     const droppedItemId = e.currentTarget.id
-    let reorderVal = { 
+    let reorderVal = {
       start: parseInt(this.state.draggedItemIndex),
       end: parseInt(droppedItemId)
     }
@@ -99,14 +99,13 @@ class DashboardContainer extends React.Component {
   onSubmit(e) {
     e.preventDefault()
     const val = this.state.inputValue
-    console.info('val', val)
     const editedItemIndex = this.state.editedItemIndex
     if(val && editedItemIndex !== null) {
       this.props.dashboardEditItem({ val, editedItemIndex })
-      this.setState({ inputValue: '', editedItemIndex: null })
+      this.setState({ inputValue: [], editedItemIndex: null })
     } else if(val) {
       this.props.dashboardAddItem(val)
-      this.setState({ inputValue: '' })
+      this.setState({ inputValue: [] })
     } else {
       alert(`Value can't be empty`)
     }

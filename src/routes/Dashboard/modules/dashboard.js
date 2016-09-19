@@ -48,12 +48,10 @@ const ACTION_HANDLERS = {
   },
   [DASHBOARD_ADD_ITEM]: (state, action) => { 
     const mockedId = Math.floor(Date.now() / 1000)
+    const inputsValuesArray = action.payload
     const newItem = {
       key: mockedId, 
-      rowColumns: [
-        action.payload,
-        'kamil'
-      ]
+      rowColumns: inputsValuesArray
     }
     state.reducerRows.push(newItem)
     return Object.assign({}, state)
