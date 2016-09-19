@@ -97,22 +97,24 @@ const ACTION_HANDLERS = {
 const initialState = {
   reducerSchema: {
       technology: String,
-      review: String
+      review: String,
+      picture: String,
+      section: String
   },
   visitsCount: 0,
   reducerRows: [
     {
       key: 0,
       rowColumns: [
-        'Angular',
-        'super'
+        { name: 'technology', value: 'Angular', type: String},
+        { name: 'review', value: 'super',  type: String}
       ]
     },
     {
       key: 1, 
       rowColumns: [
-        'JQuery',
-        'old'
+        { name: 'technology', value: 'jQuery', type: String},
+        { name: 'review', value: 'old',  type: String}
       ]
     }
   ]

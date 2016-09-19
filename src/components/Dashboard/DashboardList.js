@@ -10,7 +10,7 @@ const ReducerRowsEditor = (props) => {
   const rowColumns = props.inputValue ? props.inputValue : props.dashboard.reducerRows[props.editedItemIndex].rowColumns
   let inputJSX = rowColumns.map((cellItem, cellIndex) => {
     let inputJSX = <input 
-      value={cellItem}
+      value={cellItem.value}
       type='input' 
       placeholder='type here a value' 
       style={{width: 300}}
@@ -63,9 +63,9 @@ export const DashboardList = (props) => {
       let cellJSX
 
       if(props.editedItemIndex === i) {
-        cellJSX = <p><b><u>{cellItem}</u></b></p>
+        cellJSX = <p><b><u>{cellItem.value}</u></b></p>
       } else {
-        cellJSX = <p>{cellItem}</p>
+        cellJSX = <p>{cellItem.value}</p>
       }
       return <div key={cellIndex}>{cellJSX}</div>
     })
