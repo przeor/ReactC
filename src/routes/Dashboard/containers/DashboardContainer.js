@@ -75,19 +75,24 @@ class DashboardContainer extends React.Component {
   }
 
   inputOnChange(rowColumns, cellIndex, e) {
-    rowColumns = rowColumns.slice() // passing by value, NOT reference!
-    rowColumns[cellIndex] = e.target.value
+    rowColumns[cellIndex] = Object.assign({}, rowColumns[cellIndex])  // passing by value, NOT reference!
+    rowColumns[cellIndex].value = e.target.value
     this.setState({ inputValue: rowColumns })
   }
 
-  addInputOnChange(allInputsLen, cellIndex, e) {
+  addInputOnChange(schemaKeys, reducerSchema, cellIndex, e) {
+    const allInputsLen = schemaKeys.length
     let currentInputs = this.state.inputValue.slice()
     if(currentInputs.length === 0) {
       for(var i = 0; i < allInputsLen; i++) {
-          currentInputs.push('');
+          let newObj = {}
+          newObj.name = schemaKeys[i]
+          newObj.type = reducerSchema[schemaKeys[i]]
+          newObj.value = ''
+          currentInputs.push(newObj);
       }
     }
-    currentInputs[cellIndex] = e.target.value
+    currentInputs[cellIndex].value = e.target.value
     this.setState({ inputValue: currentInputs })
   }
 
