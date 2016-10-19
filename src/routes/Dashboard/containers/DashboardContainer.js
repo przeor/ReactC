@@ -5,7 +5,7 @@ import {
   dashboardAddItem,
   dashboardEditItem 
 } from '../modules/dashboard'
-import Dashboard from 'components/Dashboard'
+import Dashboard from '../../../components/Dashboard'
 
 const mapActionCreators = {
   dashboardVisitIncrement: () => dashboardVisitIncrement(1),
@@ -14,7 +14,7 @@ const mapActionCreators = {
 }
 
 const mapStateToProps = (state) => ({
-  dashboard: state.dashboard
+  dashboard: state.dashboardReducer
 })
 
 
@@ -69,7 +69,7 @@ class DashboardContainer extends React.Component {
           inputValue={this.state.inputValue}
           inputOnChange={this.inputOnChange}
           onSubmit={this.onSubmit} />
-    );
+    )
   }
 }
 
