@@ -12,7 +12,7 @@ export const Dashboard = (props) => {
     }
     return <h4 
             key={i} 
-            onClick={props.itemOnEdit.bind(undefined,i)}
+            onClick={() => props.itemOnEdit(i)}
             style={{cursor: 'pointer'}}>
               {itemJSX}
           </h4>

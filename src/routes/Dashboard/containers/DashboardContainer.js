@@ -34,7 +34,7 @@ class DashboardContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dashboardVisitIncrement();
+    this.props.dashboardVisitIncrement()
   }
 
   inputOnChange(e) {
