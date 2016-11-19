@@ -13,7 +13,6 @@ export function dashboardVisitIncrement (value = 1) {
   }
 }
 
-
 export const actions = {
   dashboardVisitIncrement
 }
@@ -22,15 +21,27 @@ export const actions = {
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [DASHBOARD_VISITS_COUNT]: (state, action) => state + action.payload
+  [DASHBOARD_VISITS_COUNT]: (state, action) => { 
+    return Object.assign({}, state, {
+      visitsCount: state.visitsCount + action.payload
+    })
+  }
 }
 
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = 0
+const initialState = {
+  visitsCount: 0,
+  dashboardItems: [
+    {key: 0, label: 'Angular'},
+    {key: 1, label: 'JQuery'},
+    {key: 2, label: 'Polymer'},
+    {key: 3, label: 'ReactJS'}
+  ]
+}
+
 export default function dashboardReducer (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
-
   return handler ? handler(state, action) : state
 }
