@@ -4,6 +4,7 @@
 export const DASHBOARD_VISITS_COUNT = 'DASHBOARD_VISITS_COUNT'
 export const DASHBOARD_ADD_ITEM = 'DASHBOARD_ADD_ITEM'
 export const DASHBOARD_EDIT_ITEM = 'DASHBOARD_EDIT_ITEM'
+export const DASHBOARD_REORDER_ITEM = 'DASHBOARD_REORDER_ITEM'
 
 // ------------------------------------
 // Actions
@@ -25,6 +26,13 @@ export function dashboardAddItem (value) {
 export function dashboardEditItem (value) {
   return {
     type: DASHBOARD_EDIT_ITEM,
+    payload: value
+  }
+}
+
+export function dashboardReorderItems (value) {
+  return {
+    type: DASHBOARD_REORDER_ITEM,
     payload: value
   }
 }
@@ -56,6 +64,35 @@ const ACTION_HANDLERS = {
     immutableDashboardItems[index].label = newLabel
     return Object.assign({}, state, {
       dashboardItems: immutableDashboardItems
+    })
+  },
+  [DASHBOARD_REORDER_ITEM]: (state, action) => { 
+    const reorder = action.payload
+    const reorderItem = state.dashboardItems[reorder.start]
+    let newDashboardItems = []
+    state.dashboardItems.map((item, i) => {
+      if(i === reorder.start) {
+        return
+      }
+
+      // we need that if statement because
+      // the behaviour is determined if someone is dragging
+      // an item from higher to lower place on the list or vice versa
+      if(reorder.end < reorder.start) {
+        if(i === reorder.end) {
+          newDashboardItems.push(reorderItem)
+        }
+        newDashboardItems.push(item)
+      } else {
+        newDashboardItems.push(item)
+        if(i === reorder.end) {
+          newDashboardItems.push(reorderItem)
+        }
+      }
+    })
+
+    return Object.assign({}, state, {
+      dashboardItems: newDashboardItems
     })
   }
 }
