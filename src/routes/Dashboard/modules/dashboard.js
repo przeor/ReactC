@@ -1,3 +1,7 @@
+import scaphold from 'utils/apolloConfig.js'
+
+const fetcher = scaphold.graphQLFetcher
+
 // ------------------------------------
 // Constants
 // ------------------------------------
