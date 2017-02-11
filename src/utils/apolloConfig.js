@@ -32,9 +32,15 @@ const client = new ApolloClient({
   networkInterface,
 });
 
-client.query({query}).then((results) => {
-  console.info('res', results)
+client
+  .query({query})
+  .then((results) => {
+    const { data: { viewer: { allDashboardItems: { edges } }}} = results
+    const resArray = edges.map((item, i) => {
+      return item.node
+    })
+    return resArray
 })
 
 
-export default { config }
+export default { config, client }
