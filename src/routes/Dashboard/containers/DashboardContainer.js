@@ -4,7 +4,8 @@ import {
   dashboardVisitIncrement, 
   dashboardAddItem,
   dashboardEditItem ,
-  dashboardReorderItems
+  dashboardReorderItems,
+  fetchDashboardDataAsync
 } from '../modules/dashboard'
 import Dashboard from 'components/Dashboard'
 
@@ -12,7 +13,8 @@ const mapActionCreators = {
   dashboardVisitIncrement: () => dashboardVisitIncrement(1),
   dashboardAddItem: (value) => dashboardAddItem(value),
   dashboardEditItem: (value) => dashboardEditItem(value),
-  dashboardReorderItems: (value) => dashboardReorderItems(value)
+  dashboardReorderItems: (value) => dashboardReorderItems(value),
+  fetchDashboardDataAsync: () => fetchDashboardDataAsync()
 }
 
 const mapStateToProps = (state) => ({
@@ -40,8 +42,12 @@ class DashboardContainer extends React.Component {
     }
   }
 
+  componentWillMount() {
+    this.props.fetchDashboardDataAsync()
+  }
+
   componentDidMount() {
-    this.props.dashboardVisitIncrement();
+    this.props.dashboardVisitIncrement()
   }
 
   handleOnDragStart (e) {
@@ -98,9 +104,9 @@ class DashboardContainer extends React.Component {
   }
 
   render () {
-    if(this.props.session.isNotLoggedIn) {
-      return <h4>Please login in order to access your dashboard</h4>
-    }
+    // if(this.props.session.isNotLoggedIn) {
+    //   return <h4>Please login in order to access your dashboard</h4>
+    // }
 
     return (
         <Dashboard {...this.props} 
