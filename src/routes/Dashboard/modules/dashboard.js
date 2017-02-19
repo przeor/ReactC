@@ -56,7 +56,51 @@ export function dashboardReorderItems (value) {
 
 export const fetchDashboardDataAsync = () => {
   return async (dispatch, getState) => {
-    const query = gql`query GetAllDashboardItems {
+    // below we are mocking the list name, but in future
+    // when we will have more than just a one list
+    // then that name below "dashboardMainListOrder"
+    // will be dynamic one
+    const dashboardListOrderName = 'dashboardMainListOrder'
+
+
+
+    // this query, is asking for the Order
+    const queryOrder = gql`query GetAllDashboardItemListOrders {
+      viewer {
+        allDashboardItemListOrders  {
+          edges {
+            node {
+              id
+              orderListIdsArray
+              orderListName
+            }
+          }
+        }
+      }
+    }`
+
+    // based on the results, we will have the dashboardItemsOrdersArray
+    let dashboardItemsOrdersArray = await client
+      .query({query: queryOrder})
+      .then((results) => {
+        console.info('results', results)
+        // const { data: { viewer: { allDashboardItems: { edges } }}} = results
+        // const resArray = edges.map((item, i) => {
+        //   return item.node
+        // })
+        // return resArray
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+    })
+
+
+
+    // THE ITEMS ORDER is known, let's ask for the certain
+    // items.. as we know the items Ids from the dashboardItemsOrdersArray
+    const queryFetchItems = gql`query GetAllDashboardItems {
       viewer {
         allDashboardItems  {
           edges {
@@ -70,8 +114,9 @@ export const fetchDashboardDataAsync = () => {
     }`
 
     let dashboardItemsArray = await client
-      .query({query})
+      .query({query: queryFetchItems})
       .then((results) => {
+        console.info('results', results)
         const { data: { viewer: { allDashboardItems: { edges } }}} = results
         const resArray = edges.map((item, i) => {
           return item.node
