@@ -62,12 +62,14 @@ export const fetchDashboardDataAsync = () => {
     // will be dynamic one
     const dashboardListOrderName = 'dashboardMainListOrder'
 
-
-
     // this query, is asking for the Order
     const queryOrder = gql`query GetAllDashboardItemListOrders {
       viewer {
-        allDashboardItemListOrders  {
+        allDashboardItemListOrders (where: {
+          orderListName: {
+            eq: "${dashboardListOrderName}"
+          }
+        })  {
           edges {
             node {
               id
@@ -79,11 +81,12 @@ export const fetchDashboardDataAsync = () => {
       }
     }`
 
+
     // based on the results, we will have the dashboardItemsOrdersArray
     let dashboardItemsOrdersArray = await client
       .query({query: queryOrder})
       .then((results) => {
-        console.info('results', results)
+        console.info('results', results.data.viewer.allDashboardItemListOrders.edges)
         // const { data: { viewer: { allDashboardItems: { edges } }}} = results
         // const resArray = edges.map((item, i) => {
         //   return item.node
