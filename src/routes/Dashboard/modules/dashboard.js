@@ -56,7 +56,64 @@ export function dashboardReorderItems (value) {
 
 export const fetchDashboardDataAsync = () => {
   return async (dispatch, getState) => {
-    const query = gql`query GetAllDashboardItems {
+    // below we are mocking the list name, but in future
+    // when we will have more than just a one list
+    // then that name below "dashboardMainListOrder"
+    // will be dynamic one
+    const dashboardListOrderName = 'dashboardMainListOrder'
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #1. - let's fetch the items order
+    // *************
+
+    // this query, is asking for the Order
+    const queryOrder = gql`query GetAllDashboardItemListOrders {
+      viewer {
+        allDashboardItemListOrders (where: {
+          orderListName: {
+            eq: "${dashboardListOrderName}"
+          }
+        })  {
+          edges {
+            node {
+              id
+              orderListIdsArray
+              orderListName
+            }
+          }
+        }
+      }
+    }`
+
+
+    // based on the results, we will have the dashboardItemsOrdersArray
+    const dashboardItemsOrdersArray = await client
+      .query({query: queryOrder})
+      .then((results) => {
+        console.info('results', results.data.viewer.allDashboardItemListOrders.edges)
+        const { data: { viewer: { allDashboardItemListOrders: { edges } }}} = results
+        const resArray = edges.map((item, i) => {
+          return item.node
+        })
+        return resArray
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+    })
+
+    const orderListIdsArray = dashboardItemsOrdersArray[0].orderListIdsArray
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #2. - let's fetch the items details
+    // *************
+
+    // THE ITEMS ORDER is known, let's ask for the certain
+    // items.. as we know the items Ids from the dashboardItemsOrdersArray
+    const queryFetchItems = gql`query GetAllDashboardItems {
       viewer {
         allDashboardItems  {
           edges {
@@ -69,14 +126,17 @@ export const fetchDashboardDataAsync = () => {
       }
     }`
 
-    let dashboardItemsArray = await client
-      .query({query})
+    let dashboardItemsObjects = await client
+      .query({query: queryFetchItems})
       .then((results) => {
+        console.info('results', results)
         const { data: { viewer: { allDashboardItems: { edges } }}} = results
-        const resArray = edges.map((item, i) => {
+        let resObj = {}
+        edges.map((item, i) => {
+          resObj[item.node.id] = item.node
           return item.node
         })
-        return resArray
+        return resObj
     }).catch((errorReason) => {
       // Here you handle any errors.
       // You can dispatch some
@@ -84,7 +144,20 @@ export const fetchDashboardDataAsync = () => {
       // dispatch(yourCustomErrorAction(errorReason))
     })
 
-    dispatch(fetchDashboardDataSuccess(dashboardItemsArray))
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #3. - let's mix the order with the items details
+    // *************
+    const dashboardItemsArrayOrdered = orderListIdsArray.map((listItemID) => {
+      return dashboardItemsObjects[listItemID]
+    })
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #4. - let's dispatch the dashboardItemsArrayOrdered
+    // *************
+    dispatch(fetchDashboardDataSuccess(dashboardItemsArrayOrdered))
   }
 }
 

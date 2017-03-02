@@ -2,7 +2,7 @@ import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import gql from 'graphql-tag'
 
 const config = {
-  scapholdUrl: 'https://us-west-2.api.scaphold.io/graphql/measly-jail'
+  scapholdUrl: 'https://us-west-2.api.scaphold.io/graphql/reactjs-co'
 }
 
 const opts = {uri: config.scapholdUrl}
