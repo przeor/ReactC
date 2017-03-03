@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { 
   dashboardVisitIncrement, 
-  dashboardAddItem,
+  dashboardAddItemAsync,
   dashboardEditItem ,
   dashboardReorderItems,
   fetchDashboardDataAsync
@@ -11,7 +11,7 @@ import Dashboard from 'components/Dashboard'
 
 const mapActionCreators = {
   dashboardVisitIncrement: () => dashboardVisitIncrement(1),
-  dashboardAddItem: (value) => dashboardAddItem(value),
+  dashboardAddItemAsync: (value) => dashboardAddItemAsync(value),
   dashboardEditItem: (value) => dashboardEditItem(value),
   dashboardReorderItems: (value) => dashboardReorderItems(value),
   fetchDashboardDataAsync: () => fetchDashboardDataAsync()
@@ -96,7 +96,7 @@ class DashboardContainer extends React.Component {
       this.props.dashboardEditItem({ val, editedItemIndex })
       this.setState({ inputValue: '', editedItemIndex: null })
     } else if(val) {
-      this.props.dashboardAddItem(val)
+      this.props.dashboardAddItemAsync(val)
       this.setState({ inputValue: '' })
     } else {
       alert(`Value can't be empty`)

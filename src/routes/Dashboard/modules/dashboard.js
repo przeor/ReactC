@@ -162,6 +162,116 @@ export const fetchDashboardDataAsync = () => {
 }
 
 
+export const dashboardAddItemAsync = (newDashboardItemValue) => {
+  return async (dispatch, getState) => {
+    
+    // *****************************************************************
+    // *************
+    // ************* STEP #1. - preparation of the mutation query
+    // *************
+    const mutationInsert = gql`mutation Create($data: CreateDashboardItemInput!) {
+        createDashboardItem(input: $data) {
+          changedDashboardItem {
+            id
+            label
+          }
+        }
+      }`
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #2. - preparation of the variables that we need to insert
+    // *************
+    const variablesInsert = {
+        "data": {
+          "label": newDashboardItemValue
+        }
+      }
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #3. - making the mutations and retrieving the newDashboardItemID
+    // *************
+    const newDashboardItemID = await client
+      .mutate({mutation: mutationInsert, variables: variablesInsert})
+      .then((results) => {
+        const newObjectId = results.data.createDashboardItem.changedDashboardItem.id
+        console.info('results', newObjectId)
+        return newObjectId
+
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+      console.info('error', errorReason)
+    })
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #4. - OK, we've got the ID. Let's update the list
+    // *************
+    console.info('here is the ID: ', newDashboardItemID)
+
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #5. - preparation of the mutation query
+    // *************
+    const mutationListUpdate = gql`mutation UpdateDashboardItemListOrder($data: UpdateDashboardItemListOrderInput!) {
+      updateDashboardItemListOrder(input: $data) {
+        changedDashboardItemListOrder {
+          id
+          orderListIdsArray
+        }
+      }
+    }`
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #6. - preparation of the variables that we need to insert
+    // *************
+    const variablesListUpdate = {
+      "data": {
+        "id": "RGFzaGJvYXJkSXRlbUxpc3RPcmRlcjoz",
+        "orderListIdsArray": [
+          newDashboardItemID
+        ]
+      }
+    }
+
+
+
+    const listID = await client
+      .mutate({mutation: mutationListUpdate, variables: variablesListUpdate})
+      .then((results) => {
+        console.info('results', results)
+        const newObjectId = results.data.createDashboardItemListOrder.changedDashboardItemListOrder.id
+        console.info('newObjectId', newObjectId)
+        return newObjectId
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+      console.info('error', errorReason)
+    })
+
+
+    console.info('listID', listID)
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #5. - we have updated the list, let's dispatch the new value and ID
+    // *************
+    dispatch(dashboardAddItem({ newDashboardItemValue, newDashboardItemID }))
+  }
+}
+
+
 
 // ------------------------------------
 // Action Handlers
@@ -178,10 +288,9 @@ const ACTION_HANDLERS = {
     })
   },
   [DASHBOARD_ADD_ITEM]: (state, action) => { 
-    const mockedId = Math.floor(Date.now() / 1000)
     const newItem = {
-      label: action.payload,
-      id: mockedId
+      label: action.payload.newDashboardItemValue,
+      id: action.payload.newDashboardItemID
     }
     return Object.assign({}, state, {
       dashboardItems: [...state.dashboardItems, newItem]
