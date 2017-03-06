@@ -105,6 +105,7 @@ export const fetchDashboardDataAsync = () => {
     })
 
     const orderListIdsArray = dashboardItemsOrdersArray[0].orderListIdsArray
+    const currentListId = dashboardItemsOrdersArray[0].id
 
     // *****************************************************************
     // *************
@@ -126,7 +127,13 @@ export const fetchDashboardDataAsync = () => {
       }
     }`
 
-    let dashboardItemsObjects = await client
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #3. - doing the async backend call with all details 
+    // ************* (GraphQL query doing the heavy lifting now)
+    // *************
+    const dashboardItemsObjects = await client
       .query({query: queryFetchItems})
       .then((results) => {
         console.info('results', results)
@@ -147,7 +154,7 @@ export const fetchDashboardDataAsync = () => {
 
     // *****************************************************************
     // *************
-    // ************* STEP #3. - let's mix the order with the items details
+    // ************* STEP #4. - let's mix the order with the items details
     // *************
     const dashboardItemsArrayOrdered = orderListIdsArray.map((listItemID) => {
       return dashboardItemsObjects[listItemID]
@@ -155,9 +162,125 @@ export const fetchDashboardDataAsync = () => {
 
     // *****************************************************************
     // *************
-    // ************* STEP #4. - let's dispatch the dashboardItemsArrayOrdered
+    // ************* STEP #5. - let's dispatch the dashboardItemsArrayOrdered
     // *************
-    dispatch(fetchDashboardDataSuccess(dashboardItemsArrayOrdered))
+    dispatch(fetchDashboardDataSuccess({ dashboardItemsArrayOrdered, currentListId }))
+  }
+}
+
+
+export const dashboardAddItemAsync = (newDashboardItemObject) => {
+  return async (dispatch, getState) => {
+    const { newDashboardItemValue, dashboardState  } = newDashboardItemObject
+    const currentListId = dashboardState.currentListId
+    // the currentListArray holds an array of IDs, which we will update later
+    // via the GraphQL query (see step 6, below)
+    const currentListArray = dashboardState.dashboardItems.map((dashboardItem) => {
+      return dashboardItem.id
+    })
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #1. - preparation of the mutation query
+    // *************
+    const mutationInsert = gql`mutation Create($data: CreateDashboardItemInput!) {
+        createDashboardItem(input: $data) {
+          changedDashboardItem {
+            id
+            label
+          }
+        }
+      }`
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #2. - preparation of the variables that we need to insert
+    // *************
+    const variablesInsert = {
+        "data": {
+          "label": newDashboardItemValue
+        }
+      }
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #3. - making the mutations and retrieving the newDashboardItemID
+    // *************
+    const newDashboardItemID = await client
+      .mutate({mutation: mutationInsert, variables: variablesInsert})
+      .then((results) => {
+        const newObjectId = results.data.createDashboardItem.changedDashboardItem.id
+        console.info('results', newObjectId)
+        return newObjectId
+
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+      console.info('error', errorReason)
+    })
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #4. - OK, we've got the ID. Let's update the list
+    // *************
+    console.info('here is the ID: ', newDashboardItemID)
+
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #5. - preparation of the mutation query
+    // *************
+    const mutationListUpdate = gql`mutation UpdateDashboardItemListOrder($data: UpdateDashboardItemListOrderInput!) {
+      updateDashboardItemListOrder(input: $data) {
+        changedDashboardItemListOrder {
+          id
+          orderListIdsArray
+        }
+      }
+    }`
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #6. - preparation of the variables that we need to have in order to update
+    // *************
+    const variablesListUpdate = {
+      "data": {
+        // this ID, is the ID of the list which we want to update
+        "id": currentListId,
+        // here is going a current list with all IDS (including the new one)
+        // we are using the ES6's "..."  spread operator 
+        "orderListIdsArray": [...currentListArray, newDashboardItemID]
+      }
+    }
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #7. - doing the async backend call with all details 
+    // ************* (GraphQL query doing the heavy lifting now)
+    // *************
+    const listID = await client
+      .mutate({mutation: mutationListUpdate, variables: variablesListUpdate})
+      .then((results) => {
+        const newObjectId = results.data.createDashboardItemListOrder.changedDashboardItemListOrder.id
+        return newObjectId
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+      console.info('error', errorReason)
+    })
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #8. - we have updated the list, let's dispatch the new value and ID
+    // *************
+    dispatch(dashboardAddItem({ newDashboardItemValue, newDashboardItemID }))
   }
 }
 
@@ -169,7 +292,10 @@ export const fetchDashboardDataAsync = () => {
 const ACTION_HANDLERS = {
   [FETCH_DASHBOARD_DATA_SUCCESS]: (state, action) => { 
     return Object.assign({}, state, {
-      dashboardItems: action.payload
+      dashboardItems: action.payload.dashboardItemsArrayOrdered,
+      // The below's list id will be used, when updating it in other functions
+      // like dashboardAddItemAsync (this is why we need to store it here)
+      currentListId: action.payload.currentListId
     })
   },
   [DASHBOARD_VISITS_COUNT]: (state, action) => { 
@@ -178,10 +304,9 @@ const ACTION_HANDLERS = {
     })
   },
   [DASHBOARD_ADD_ITEM]: (state, action) => { 
-    const mockedId = Math.floor(Date.now() / 1000)
     const newItem = {
-      label: action.payload,
-      id: mockedId
+      label: action.payload.newDashboardItemValue,
+      id: action.payload.newDashboardItemID
     }
     return Object.assign({}, state, {
       dashboardItems: [...state.dashboardItems, newItem]
@@ -231,6 +356,7 @@ const ACTION_HANDLERS = {
 // Reducer
 // ------------------------------------
 const initialState = {
+  currentListId: null,
   dashboardHasFetchedData: false,
   visitsCount: 0,
   dashboardItems: [
