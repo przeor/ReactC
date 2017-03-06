@@ -96,7 +96,7 @@ class DashboardContainer extends React.Component {
       this.props.dashboardEditItem({ val, editedItemIndex })
       this.setState({ inputValue: '', editedItemIndex: null })
     } else if(val) {
-      this.props.dashboardAddItemAsync(val)
+      this.props.dashboardAddItemAsync({ newDashboardItemValue: val, dashboardState: this.props.dashboard  })
       this.setState({ inputValue: '' })
     } else {
       alert(`Value can't be empty`)

@@ -105,6 +105,7 @@ export const fetchDashboardDataAsync = () => {
     })
 
     const orderListIdsArray = dashboardItemsOrdersArray[0].orderListIdsArray
+    const currentListId = dashboardItemsOrdersArray[0].id
 
     // *****************************************************************
     // *************
@@ -126,7 +127,13 @@ export const fetchDashboardDataAsync = () => {
       }
     }`
 
-    let dashboardItemsObjects = await client
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #3. - doing the async backend call with all details 
+    // ************* (GraphQL query doing the heavy lifting now)
+    // *************
+    const dashboardItemsObjects = await client
       .query({query: queryFetchItems})
       .then((results) => {
         console.info('results', results)
@@ -147,7 +154,7 @@ export const fetchDashboardDataAsync = () => {
 
     // *****************************************************************
     // *************
-    // ************* STEP #3. - let's mix the order with the items details
+    // ************* STEP #4. - let's mix the order with the items details
     // *************
     const dashboardItemsArrayOrdered = orderListIdsArray.map((listItemID) => {
       return dashboardItemsObjects[listItemID]
@@ -155,16 +162,23 @@ export const fetchDashboardDataAsync = () => {
 
     // *****************************************************************
     // *************
-    // ************* STEP #4. - let's dispatch the dashboardItemsArrayOrdered
+    // ************* STEP #5. - let's dispatch the dashboardItemsArrayOrdered
     // *************
-    dispatch(fetchDashboardDataSuccess(dashboardItemsArrayOrdered))
+    dispatch(fetchDashboardDataSuccess({ dashboardItemsArrayOrdered, currentListId }))
   }
 }
 
 
-export const dashboardAddItemAsync = (newDashboardItemValue) => {
+export const dashboardAddItemAsync = (newDashboardItemObject) => {
   return async (dispatch, getState) => {
-    
+    const { newDashboardItemValue, dashboardState  } = newDashboardItemObject
+    const currentListId = dashboardState.currentListId
+    // the currentListArray holds an array of IDs, which we will update later
+    // via the GraphQL query (see step 6, below)
+    const currentListArray = dashboardState.dashboardItems.map((dashboardItem) => {
+      return dashboardItem.id
+    })
+
     // *****************************************************************
     // *************
     // ************* STEP #1. - preparation of the mutation query
@@ -231,25 +245,28 @@ export const dashboardAddItemAsync = (newDashboardItemValue) => {
 
     // *****************************************************************
     // *************
-    // ************* STEP #6. - preparation of the variables that we need to insert
+    // ************* STEP #6. - preparation of the variables that we need to have in order to update
     // *************
     const variablesListUpdate = {
       "data": {
-        "id": "RGFzaGJvYXJkSXRlbUxpc3RPcmRlcjoz",
-        "orderListIdsArray": [
-          newDashboardItemID
-        ]
+        // this ID, is the ID of the list which we want to update
+        "id": currentListId,
+        // here is going a current list with all IDS (including the new one)
+        // we are using the ES6's "..."  spread operator 
+        "orderListIdsArray": [...currentListArray, newDashboardItemID]
       }
     }
 
 
-
+    // *****************************************************************
+    // *************
+    // ************* STEP #7. - doing the async backend call with all details 
+    // ************* (GraphQL query doing the heavy lifting now)
+    // *************
     const listID = await client
       .mutate({mutation: mutationListUpdate, variables: variablesListUpdate})
       .then((results) => {
-        console.info('results', results)
         const newObjectId = results.data.createDashboardItemListOrder.changedDashboardItemListOrder.id
-        console.info('newObjectId', newObjectId)
         return newObjectId
     }).catch((errorReason) => {
       // Here you handle any errors.
@@ -259,13 +276,9 @@ export const dashboardAddItemAsync = (newDashboardItemValue) => {
       console.info('error', errorReason)
     })
 
-
-    console.info('listID', listID)
-
-
     // *****************************************************************
     // *************
-    // ************* STEP #5. - we have updated the list, let's dispatch the new value and ID
+    // ************* STEP #8. - we have updated the list, let's dispatch the new value and ID
     // *************
     dispatch(dashboardAddItem({ newDashboardItemValue, newDashboardItemID }))
   }
@@ -279,7 +292,10 @@ export const dashboardAddItemAsync = (newDashboardItemValue) => {
 const ACTION_HANDLERS = {
   [FETCH_DASHBOARD_DATA_SUCCESS]: (state, action) => { 
     return Object.assign({}, state, {
-      dashboardItems: action.payload
+      dashboardItems: action.payload.dashboardItemsArrayOrdered,
+      // The below's list id will be used, when updating it in other functions
+      // like dashboardAddItemAsync (this is why we need to store it here)
+      currentListId: action.payload.currentListId
     })
   },
   [DASHBOARD_VISITS_COUNT]: (state, action) => { 
@@ -340,6 +356,7 @@ const ACTION_HANDLERS = {
 // Reducer
 // ------------------------------------
 const initialState = {
+  currentListId: null,
   dashboardHasFetchedData: false,
   visitsCount: 0,
   dashboardItems: [
