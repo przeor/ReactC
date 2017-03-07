@@ -4,7 +4,7 @@ import {
   dashboardVisitIncrement, 
   dashboardAddItemAsync,
   dashboardEditItem ,
-  dashboardReorderItems,
+  dashboardReorderItemsAsync,
   fetchDashboardDataAsync
 } from '../modules/dashboard'
 import Dashboard from 'components/Dashboard'
@@ -13,7 +13,7 @@ const mapActionCreators = {
   dashboardVisitIncrement: () => dashboardVisitIncrement(1),
   dashboardAddItemAsync: (value) => dashboardAddItemAsync(value),
   dashboardEditItem: (value) => dashboardEditItem(value),
-  dashboardReorderItems: (value) => dashboardReorderItems(value),
+  dashboardReorderItemsAsync: (value) => dashboardReorderItemsAsync(value),
   fetchDashboardDataAsync: () => fetchDashboardDataAsync()
 }
 
@@ -73,7 +73,7 @@ class DashboardContainer extends React.Component {
     const reorderIsCorrect = !isNaN(reorderVal.start) && !isNaN(reorderVal.end) && reorderVal.start !== reorderVal.end
 
     if(reorderIsCorrect) {
-      this.props.dashboardReorderItems(reorderVal)
+      this.props.dashboardReorderItemsAsync({ reorderVal, dashboardReducer: this.props.dashboard })
     }
 
     this.setState({ draggedItemIndex: null })

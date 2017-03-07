@@ -286,6 +286,113 @@ export const dashboardAddItemAsync = (newDashboardItemObject) => {
 
 
 
+export const dashboardReorderItemsAsync = (reorderDashboardItemObject) => {
+  return async (dispatch, getState) => {
+    const { reorderVal, dashboardReducer  } = reorderDashboardItemObject
+    const currentListId = dashboardReducer.currentListId
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #1. - we have moved the function
+    // ************* from our action handler to the action creator
+    // ************* 
+    const reorderItem = dashboardReducer.dashboardItems[reorderVal.start]
+    let newDashboardItems = []
+    dashboardReducer.dashboardItems.map((item, i) => {
+      if(i === reorderVal.start) {
+        return
+      }
+
+      // we need that if statement because
+      // the behaviour is determined if someone is dragging
+      // an item from higher to lower place on the list or vice versa
+      if(reorderVal.end < reorderVal.start) {
+        if(i === reorderVal.end) {
+          newDashboardItems.push(reorderItem)
+        }
+        newDashboardItems.push(item)
+      } else {
+        newDashboardItems.push(item)
+        if(i === reorderVal.end) {
+          newDashboardItems.push(reorderItem)
+        }
+      }
+    })
+
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #2. - let's prepare the array of IDs (we will use it in our query)
+    // *************
+    // the currentListArray holds an array of IDs, which we will update later
+    // via the GraphQL query (see step 6, below)
+    const newListArray = newDashboardItems.map((dashboardItem) => {
+      return dashboardItem.id
+    })
+    console.info('newListArray', newListArray)
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #3. - preparation of the mutation query
+    // *************
+    const mutationListUpdate = gql`mutation UpdateDashboardItemListOrder($data: UpdateDashboardItemListOrderInput!) {
+      updateDashboardItemListOrder(input: $data) {
+        changedDashboardItemListOrder {
+          id
+          orderListIdsArray
+        }
+      }
+    }`
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #4. - preparation of the variables that 
+    // ************* we need to have in order to update
+    // *************
+    const variablesListUpdate = {
+      "data": {
+        // this ID, is the ID of the list which we want to update
+        "id": currentListId,
+        // here is going a current list with all IDS (including the new one)
+        // we are using the ES6's "..."  spread operator 
+        "orderListIdsArray": newListArray
+      }
+    }
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #5. - doing the async backend call with all details 
+    // ************* (GraphQL query doing the heavy lifting now)
+    // *************
+    const listID = await client
+      .mutate({mutation: mutationListUpdate, variables: variablesListUpdate})
+      .then((results) => {
+        const newObjectId = results.data.createDashboardItemListOrder.changedDashboardItemListOrder.id
+        return newObjectId
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+      console.info('error', errorReason)
+    })
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #6. - let's dispatch the final effect, 
+    // ************* so the view layer can re-render
+    // *************
+    dispatch(dashboardReorderItems(newDashboardItems))
+  }
+}
+
+
+
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -322,30 +429,7 @@ const ACTION_HANDLERS = {
     })
   },
   [DASHBOARD_REORDER_ITEM]: (state, action) => { 
-    const reorder = action.payload
-    const reorderItem = state.dashboardItems[reorder.start]
-    let newDashboardItems = []
-    state.dashboardItems.map((item, i) => {
-      if(i === reorder.start) {
-        return
-      }
-
-      // we need that if statement because
-      // the behaviour is determined if someone is dragging
-      // an item from higher to lower place on the list or vice versa
-      if(reorder.end < reorder.start) {
-        if(i === reorder.end) {
-          newDashboardItems.push(reorderItem)
-        }
-        newDashboardItems.push(item)
-      } else {
-        newDashboardItems.push(item)
-        if(i === reorder.end) {
-          newDashboardItems.push(reorderItem)
-        }
-      }
-    })
-
+    const newDashboardItems = action.payload
     return Object.assign({}, state, {
       dashboardItems: newDashboardItems
     })
