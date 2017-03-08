@@ -286,6 +286,25 @@ export const dashboardAddItemAsync = (newDashboardItemObject) => {
 
 
 
+
+
+
+export const dashboardEditItemAsync = (newDashboardItemObject) => {
+  return async (dispatch, getState) => {
+    const { val, editedItemIndex, dashboardReducer  } = newDashboardItemObject
+    const currentListId = dashboardReducer.currentListId
+    // the currentListArray holds an array of IDs, which we will update later
+    // via the GraphQL query (see step 6, below)
+    const currentListArray = dashboardReducer.dashboardItems.map((dashboardItem) => {
+      return dashboardItem.id
+    })
+
+    dispatch(dashboardEditItem({ val, editedItemIndex }))
+  }
+}
+
+
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -316,7 +335,9 @@ const ACTION_HANDLERS = {
     const newLabel = action.payload.val
     const index = action.payload.editedItemIndex
     let immutableDashboardItems = [...state.dashboardItems]
-    immutableDashboardItems[index].label = newLabel
+    let writtableObject = Object.assign({}, immutableDashboardItems[index])
+    writtableObject.label = newLabel
+    immutableDashboardItems[index] = writtableObject
     return Object.assign({}, state, {
       dashboardItems: immutableDashboardItems
     })

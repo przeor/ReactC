@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { 
   dashboardVisitIncrement, 
   dashboardAddItemAsync,
-  dashboardEditItem ,
+  dashboardEditItemAsync ,
   dashboardReorderItems,
   fetchDashboardDataAsync
 } from '../modules/dashboard'
@@ -12,7 +12,7 @@ import Dashboard from 'components/Dashboard'
 const mapActionCreators = {
   dashboardVisitIncrement: () => dashboardVisitIncrement(1),
   dashboardAddItemAsync: (value) => dashboardAddItemAsync(value),
-  dashboardEditItem: (value) => dashboardEditItem(value),
+  dashboardEditItemAsync: (value) => dashboardEditItemAsync(value),
   dashboardReorderItems: (value) => dashboardReorderItems(value),
   fetchDashboardDataAsync: () => fetchDashboardDataAsync()
 }
@@ -93,7 +93,7 @@ class DashboardContainer extends React.Component {
     const val = this.state.inputValue
     const editedItemIndex = this.state.editedItemIndex
     if(val && editedItemIndex !== null) {
-      this.props.dashboardEditItem({ val, editedItemIndex })
+      this.props.dashboardEditItemAsync({ val, editedItemIndex, dashboardReducer: this.props.dashboard })
       this.setState({ inputValue: '', editedItemIndex: null })
     } else if(val) {
       this.props.dashboardAddItemAsync({ newDashboardItemValue: val, dashboardState: this.props.dashboard  })
