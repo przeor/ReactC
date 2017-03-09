@@ -266,7 +266,7 @@ export const dashboardAddItemAsync = (newDashboardItemObject) => {
     const listID = await client
       .mutate({mutation: mutationListUpdate, variables: variablesListUpdate})
       .then((results) => {
-        const newObjectId = results.data.createDashboardItemListOrder.changedDashboardItemListOrder.id
+        const newObjectId = results.data.updateDashboardItemListOrder.changedDashboardItemListOrder.id
         return newObjectId
     }).catch((errorReason) => {
       // Here you handle any errors.
@@ -292,14 +292,58 @@ export const dashboardAddItemAsync = (newDashboardItemObject) => {
 export const dashboardEditItemAsync = (newDashboardItemObject) => {
   return async (dispatch, getState) => {
     const { val, editedItemIndex, dashboardReducer  } = newDashboardItemObject
-    const currentListId = dashboardReducer.currentListId
-    // the currentListArray holds an array of IDs, which we will update later
-    // via the GraphQL query (see step 6, below)
-    const currentListArray = dashboardReducer.dashboardItems.map((dashboardItem) => {
-      return dashboardItem.id
+    const currentItemInEditId = dashboardReducer.dashboardItems[editedItemIndex].id
+    
+    // *****************************************************************
+    // *************
+    // ************* STEP #1. - preparation of the mutation query
+    // *************
+    const mutationListUpdate = gql`mutation UpdateDashboardItem($data: UpdateDashboardItemInput!) {
+      updateDashboardItem(input: $data) {
+        changedDashboardItem {
+          id
+          label
+        }
+      }
+    }`
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #2. - preparation of the variables that we need to have in order to update
+    // *************
+    const variablesListUpdate = {
+      "data": {
+        "id": currentItemInEditId,
+        // we need to edit the label's value:
+        "label": val
+      }
+    }
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #3. - doing the async backend call with all details 
+    // ************* (GraphQL query doing the heavy lifting now)
+    // *************
+    const editedItemId = await client
+      .mutate({mutation: mutationListUpdate, variables: variablesListUpdate})
+      .then((results) => {
+        const newObjectId = results.data.updateDashboardItem.changedDashboardItem.id
+        return newObjectId
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+      console.info('error', errorReason)
     })
 
-    dispatch(dashboardEditItem({ val, editedItemIndex }))
+    // if both equals, then everything is alright 
+    // and we can dispatch the action:
+    if(editedItemId === currentItemInEditId) 
+      dispatch(dashboardEditItem({ val, editedItemIndex }))
+    else
+      alert('Error: add some edge case management')
   }
 }
 
