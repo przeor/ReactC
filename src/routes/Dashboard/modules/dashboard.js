@@ -391,6 +391,63 @@ export const dashboardReorderItemsAsync = (reorderDashboardItemObject) => {
 }
 
 
+export const dashboardEditItemAsync = (newDashboardItemObject) => {
+  return async (dispatch, getState) => {
+    const { val, editedItemIndex, dashboardReducer  } = newDashboardItemObject
+    const currentItemInEditId = dashboardReducer.dashboardItems[editedItemIndex].id
+    
+    // *****************************************************************
+    // *************
+    // ************* STEP #1. - preparation of the mutation query
+    // *************
+    const mutationDashboardItemUpdate = gql`mutation UpdateDashboardItem($data: UpdateDashboardItemInput!) {
+      updateDashboardItem(input: $data) {
+        changedDashboardItem {
+          id
+          label
+        }
+      }
+    }`
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #2. - preparation of the variables that we need to have in order to update
+    // *************
+    const variablesListUpdate = {
+      "data": {
+        "id": currentItemInEditId,
+        // we need to edit the label's value:
+        "label": val
+      }
+    }
+
+
+    // *****************************************************************
+    // *************
+    // ************* STEP #3. - doing the async backend call with all details 
+    // ************* (GraphQL query doing the heavy lifting now)
+    // *************
+    const editedItemId = await client
+      .mutate({mutation: mutationDashboardItemUpdate, variables: variablesListUpdate})
+      .then((results) => {
+        const newObjectId = results.data.updateDashboardItem.changedDashboardItem.id
+        return newObjectId
+    }).catch((errorReason) => {
+      // Here you handle any errors.
+      // You can dispatch some
+      // custom error actions like:
+      // dispatch(yourCustomErrorAction(errorReason))
+      console.info('error', errorReason)
+    })
+
+    // if both equals, then everything is alright 
+    // and we can dispatch the action:
+    if(editedItemId === currentItemInEditId) 
+      dispatch(dashboardEditItem({ val, editedItemIndex }))
+    else
+      alert('Error: add some edge case management')
+  }
+}
 
 
 // ------------------------------------
@@ -423,7 +480,9 @@ const ACTION_HANDLERS = {
     const newLabel = action.payload.val
     const index = action.payload.editedItemIndex
     let immutableDashboardItems = [...state.dashboardItems]
-    immutableDashboardItems[index].label = newLabel
+    let writtableObject = Object.assign({}, immutableDashboardItems[index])
+    writtableObject.label = newLabel
+    immutableDashboardItems[index] = writtableObject
     return Object.assign({}, state, {
       dashboardItems: immutableDashboardItems
     })
