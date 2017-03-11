@@ -3,12 +3,12 @@ import { IndexLink, Link } from 'react-router'
 import classes from './Header.scss'
 
 let loginObj = {
-  user: '',
+  username: '',
   password: ''
 }
 
 const usernameOnChange = (e) => {
-  loginObj.user = e.target.value
+  loginObj.username = e.target.value
 }
 
 const passwordOnChange = (e) => {
@@ -41,7 +41,7 @@ export const Header = (props) => {
 
   if(props.session.isNotLoggedIn) {
     if(props.session.loginToken === 'invalid') {
-      loginMessageJSX = <p>Invalid login details, please try with correct user and password</p>
+      loginMessageJSX = <p>{props.session.errorMessage}</p>
     }
 
     loginFormJSX = prepareLoginJSX(props)
