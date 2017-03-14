@@ -1,8 +1,6 @@
 import client from 'utils/apolloConfig'
 import gql from 'graphql-tag'
 
-
-
 // ------------------------------------
 // Constants
 // ------------------------------------
