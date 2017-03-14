@@ -3,10 +3,11 @@ import Header from '../../components/Header'
 import classes from './CoreLayout.scss'
 import '../../styles/core.scss'
 import { connect } from 'react-redux'
-import { loginAsync } from '../../modules/session'
+import { loginAsync, checkIflAlreadyLogin } from '../../modules/session'
 
 const mapActionCreators = {
-  loginAsync
+  loginAsync,
+  checkIflAlreadyLogin
 }
 
 const mapStateToProps = (state) => ({
@@ -22,6 +23,10 @@ class CoreLayout extends Component {
   constructor(props) {
     super(props)
     this.handleLogin = this.handleLogin.bind(this)
+  }
+
+  componentWillMount() {
+    this.props.checkIflAlreadyLogin()
   }
 
   handleLogin(loginObj, e) {
