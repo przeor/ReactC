@@ -7,6 +7,7 @@ import gql from 'graphql-tag'
 // ------------------------------------
 export const SESSION_LOGIN_SUCCESS = 'SESSION_LOGIN_SUCCESS'
 export const SESSION_LOGIN_FAIL = 'SESSION_LOGIN_FAIL'
+export const SESSION_LOGOUT_SUCCESS = 'SESSION_LOGOUT_SUCCESS'
 
 // ------------------------------------
 // Actions
@@ -24,6 +25,14 @@ export function loginFail (value) {
     payload: value
   }
 }
+
+export function sessionLogoutSuccess () {
+  return {
+    type: SESSION_LOGOUT_SUCCESS
+  }
+}
+
+
 
 export const loginAsync = (loginObj) => {
   return async (dispatch, getState) => {
@@ -95,6 +104,14 @@ export const checkIflAlreadyLogin = () => {
   }
 }
 
+
+export const clearStorageAndLogout = () => {
+  return async (dispatch, getState) => {
+    localStorage.clear()
+    dispatch(sessionLogoutSuccess())
+  }
+}
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
@@ -113,6 +130,14 @@ const ACTION_HANDLERS = {
     return Object.assign({}, state, {
       loginToken: 'invalid',
       errorMessage: action.payload
+    })
+  },
+  [SESSION_LOGOUT_SUCCESS]: (state, action) => {
+    return Object.assign({}, state, {
+      loginToken: 'none',
+      isNotLoggedIn: true,
+      username: null,
+      userId: null
     })
   }
 }

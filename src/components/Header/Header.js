@@ -49,6 +49,17 @@ export const Header = (props) => {
     loginFormJSX = null
   }
 
+  let logoutJSX = null
+  if(props.session.isNotLoggedIn === false) {
+    logoutJSX = (
+        <span>
+        {' · '}
+          <Link onClick={props.handleLogout} style={{cursor: 'pointer'}}>
+            Logout
+          </Link>
+        </span>
+      )
+  }
   return (
     <div>
       <h1>React Redux Starter Kit</h1>
@@ -64,6 +75,7 @@ export const Header = (props) => {
         <Link to='/dashboard' activeClassName={classes.activeRoute}>
           Dashboard
         </Link>
+        {logoutJSX}
       </div>
       {loginFormJSX}
       {loginMessageJSX}
