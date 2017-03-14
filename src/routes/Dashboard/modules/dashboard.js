@@ -196,7 +196,8 @@ export const dashboardAddItemAsync = (newDashboardItemObject) => {
     // *************
     const variablesInsert = {
         "data": {
-          "label": newDashboardItemValue
+          "label": newDashboardItemValue,
+          "ownerId": localStorage.getItem('currentUserId')
         }
       }
 
@@ -226,7 +227,11 @@ export const dashboardAddItemAsync = (newDashboardItemObject) => {
     // *************
     console.info('here is the ID: ', newDashboardItemID)
 
-
+    if(!newDashboardItemID) {
+      // here you can add more elegant handling error
+      alert('adding newDashboardItemID error')
+      return
+    }
 
     // *****************************************************************
     // *************
@@ -264,7 +269,7 @@ export const dashboardAddItemAsync = (newDashboardItemObject) => {
     const listID = await client
       .mutate({mutation: mutationListUpdate, variables: variablesListUpdate})
       .then((results) => {
-        const newObjectId = results.data.createDashboardItemListOrder.changedDashboardItemListOrder.id
+        const newObjectId = results.data.updateDashboardItemListOrder.changedDashboardItemListOrder.id
         return newObjectId
     }).catch((errorReason) => {
       // Here you handle any errors.
@@ -369,7 +374,7 @@ export const dashboardReorderItemsAsync = (reorderDashboardItemObject) => {
     const listID = await client
       .mutate({mutation: mutationListUpdate, variables: variablesListUpdate})
       .then((results) => {
-        const newObjectId = results.data.createDashboardItemListOrder.changedDashboardItemListOrder.id
+        const newObjectId = results.data.updateDashboardItemListOrder.changedDashboardItemListOrder.id
         return newObjectId
     }).catch((errorReason) => {
       // Here you handle any errors.
